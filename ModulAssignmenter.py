@@ -328,26 +328,28 @@ outerCycleCount = 1000
 innerCycleCount = 100
 breakThreshold = 100
 
+#path to the inital student table, has to be done via GUI
 path = r'ScoreTable _test.csv'
-
 scoreTable = read_scoreTable(path)
-studName=scoreTable[1]
-modName=scoreTable[2]
-studMark = scoreTable[4]
+print scoreTable
+#list of students, their grades and modules
+studName    = scoreTable[1]
+modName     = scoreTable[2]
+studMark    = scoreTable[4]
 
+#
+scoreMatrix = scoreTable[0]
+constArray  = scoreTable[3]
 
-scoreMatrix =scoreTable[0]
-constArray = scoreTable[3]
+#choosingList = give_choosingList()
 
-choosingList = give_choosingList()
+#zuordungMatrix = give_initZuordungMatrix(scoreMatrix)
 
-zuordungMatrix = give_initZuordungMatrix(scoreMatrix)
+#optZordungOutput = give_optZuordnungsMatrix(zuordungMatrix,sdtFactor,outerCycleCount,innerCycleCount,breakThreshold)
 
-optZordungOutput = give_optZuordnungsMatrix(zuordungMatrix,sdtFactor,outerCycleCount,innerCycleCount,breakThreshold)
+#write_table(optZordungOutput)
 
-write_table(optZordungOutput)
-
-give_plot(optZordungOutput)
+#give_plot(optZordungOutput)
 
 
 
