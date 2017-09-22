@@ -24,49 +24,31 @@ def give_testSizeConstrains():
         list.append(randrange(7,15))
     return np.asarray(list)
 
-def test_sizeConst(zuordnung, constrains):
-    sum = zuordnung.sum(axis=0)
-    delta = constrains-sum
-    if  len(np.where(delta < 0)[0]) > 0:
-        return False
-    else:
-        return True
+#checks if the assignment violates moduleSize constraints 
+def test_moduleOccupancy(assignment):
+    return not len(np.where(moduleSize < assignment.sum(axis=0))[0]) > 0
 
-def give_choosingList():
-    liste = []
-    for n in range(50):
-        liste.append(1)
-    for n in range(10):
-        liste.append(2)
-    for n in range(10):
-        liste.append(4)
-    for n in range(10):
-        liste.append(8)
-    for n in range(10):
-        liste.append(16)
-    for n in range(10):
-        liste.append(32)
-    return liste
-
-def give_initZuordungMatrix(scoreMatrix):
+#creates an initial assignment
+def give_initAssignmentMatrix(wishList):
+    (n, m) = np.shape(wishList)
+    
     while True:
-        ZuordungMatrix = np.zeros(np.shape(scoreMatrix), dtype=np.int)
-        for studNr in range(np.shape(scoreMatrix)[0]):
+        AssignmentMatrix = np.zeros((n,m), dtype=np.int)
+        for studNr in range(n):
             initValues = []
-            for n in range(3):
+            for _ in range(3):
                 while len(initValues) < 3:
-                    value = randrange(0, np.shape(scoreMatrix)[1])
+                    value = randrange(0, m)
                     if value not in initValues:
                         initValues.append(value)
             for value in initValues:
-                ZuordungMatrix[studNr][value] = 1
+                AssignmentMatrix[studNr][value] = 1
 
-        if test_sizeConst(ZuordungMatrix, constArray) == True:
+        if test_moduleOccupancy(AssignmentMatrix):
             break
 
-
     print "Initial random assignment is created!"
-    return np.asarray(ZuordungMatrix)
+    return AssignmentMatrix
 
 def give_score(zuordungMatrix,scoreMatrix,fac):
     produktMatrix = zuordungMatrix*scoreMatrix
@@ -201,8 +183,8 @@ def give_ModulPrio(auswahl):
             #sollte egal sein
             return True
 
-#Function to read the inital matrix
-def read_scoreTable(path):
+#Function to read the initial matrix
+def read_initialTable(path):
 
     with open(path) as f:
         ncols = len(f.readline().split(','))-1
@@ -234,7 +216,7 @@ def give_optZuordnungsMatrix(zuordungMatrix,sdtFactor,outerCycleCount,innerCycle
         oldouterscore = give_score(zuordungMatrix, scoreMatrix, sdtFactor)
         for n in range(innerCycleCount):
             newZuordungMatrix = np.copy(zuordungMatrix)
-            for m in range(random.choice(choosingList)):
+            for m in range(random.choice(choosingList)):#here somehow expovariate
                 newZuordungMatrixList = rand_permutation(newZuordungMatrix,constArray)
                 newZuordungMatrix = newZuordungMatrixList[0]
                 newIsBetterDueToMark = newZuordungMatrixList[1]
@@ -291,6 +273,7 @@ def give_plot(optZordungOutput):
     plt.show()
 
 def write_table(optZordungOutput):
+
     zuordungMatrix = optZordungOutput[0]
     zuordungMatrix =  zuordungMatrix*scoreMatrix
     allLines = []
@@ -321,18 +304,20 @@ def write_table(optZordungOutput):
 ################################################################################
 ################################ MAIN PROGRAM ##################################
 ################################################################################
+
+
 from timeit import default_timer as timer
 start = timer()
 
-#some weird constants that have to be described by christoph--------------------
+#some weird constants that have to be described by Christoph--------------------
 sdtFactor = 0
 outerCycleCount = 1000
 innerCycleCount = 100
 breakThreshold = 100
 
-#path to the inital student table, has to be done via GUI
+#path to the initial student table, has to be done via GUI
 path = r'ScoreTable _test.csv'
-scoreTable = read_scoreTable(path)
+scoreTable = read_initialTable(path)
 
 #list of modules, their maximum size, students, their grades and the wishmatrix
 moduleNames    = scoreTable[0]
@@ -341,18 +326,14 @@ studentNames   = scoreTable[2]
 studentGrades  = scoreTable[3]
 wishList       = scoreTable[4]
 #-------------------------------------------------------------------------------
-print wishList
 
 
+###MISSING METHOD## hiere sollten noch alle werte der tabelle auf richtigkeit uberpruft werden ...
 
-
-end = timer()
-print str(end - start) + " seconds elapsed!"
-
-
-#choosingList = give_choosingList()
-
-#zuordungMatrix = give_initZuordungMatrix(scoreMatrix)
+#creation of the initial (random) assignment
+initAssignmentMatrix = give_initAssignmentMatrix(wishList)
+print sum(initAssignmentMatrix)
+print moduleSize
 
 #optZordungOutput = give_optZuordnungsMatrix(zuordungMatrix,sdtFactor,outerCycleCount,innerCycleCount,breakThreshold)
 
@@ -360,7 +341,8 @@ print str(end - start) + " seconds elapsed!"
 
 #give_plot(optZordungOutput)
 
-
+end = timer()
+print str(end - start) + " seconds elapsed!"
 
 """
 for n in range(np.shape(zuordungMatrix)[0]):
