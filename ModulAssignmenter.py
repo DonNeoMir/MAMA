@@ -201,19 +201,20 @@ def give_ModulPrio(auswahl):
             #sollte egal sein
             return True
 
+#Function to read the inital matrix
 def read_scoreTable(path):
+
     with open(path) as f:
         ncols = len(f.readline().split(','))-1
-    scoreMatrix = np.loadtxt(path, delimiter=',', skiprows=2,dtype="int", usecols=range(1, ncols ))
 
-    studName = np.loadtxt(path, delimiter=',', skiprows=2,dtype="str", usecols=range(1))
-    modName = np.loadtxt(path, delimiter=',', skiprows=0,dtype="str", usecols=range(1, ncols ))[0]
-    sizeCons = np.loadtxt(path, delimiter=',', skiprows=1,dtype="int", usecols=range(1, ncols ))[0]
-    studMark = np.loadtxt(path, delimiter=',', skiprows=2, dtype="str", usecols=[ncols])
+    moduleNames   = np.loadtxt(path, delimiter=',', skiprows=0, dtype="str", usecols=range(1, ncols ))[0]
+    moduleSize    = np.loadtxt(path, delimiter=',', skiprows=1, dtype="int", usecols=range(1, ncols ))[0]
+    studentNames  = np.loadtxt(path, delimiter=',', skiprows=2, dtype="str", usecols=range(1))
+    studentGrades = np.loadtxt(path, delimiter=',', skiprows=2, dtype="str", usecols=[ncols])
+    wishList      = np.loadtxt(path, delimiter=',', skiprows=2, dtype="int", usecols=range(1, ncols ))
 
-
-    return [scoreMatrix,studName,modName,sizeCons,studMark]
-
+    return [moduleNames, moduleSize, studentNames, studentGrades, wishList]
+#----------------------------------------------------------------------------------------------------
 
 def give_optZuordnungsMatrix(zuordungMatrix,sdtFactor,outerCycleCount,innerCycleCount,breakThreshold):
     """
@@ -317,11 +318,13 @@ def write_table(optZordungOutput):
     f.close()
 
 
-##############################################################################################
-################################ MAIN PROGRAM ################################################
-##############################################################################################
+################################################################################
+################################ MAIN PROGRAM ##################################
+################################################################################
+from timeit import default_timer as timer
+start = timer()
 
-#some weird constants that have to be described by christoph##################################
+#some weird constants that have to be described by christoph--------------------
 sdtFactor = 0
 outerCycleCount = 1000
 innerCycleCount = 100
@@ -330,15 +333,22 @@ breakThreshold = 100
 #path to the inital student table, has to be done via GUI
 path = r'ScoreTable _test.csv'
 scoreTable = read_scoreTable(path)
-print scoreTable
-#list of students, their grades and modules
-studName    = scoreTable[1]
-modName     = scoreTable[2]
-studMark    = scoreTable[4]
 
-#
-scoreMatrix = scoreTable[0]
-constArray  = scoreTable[3]
+#list of modules, their maximum size, students, their grades and the wishmatrix
+moduleNames    = scoreTable[0]
+moduleSize     = scoreTable[1]
+studentNames   = scoreTable[2]
+studentGrades  = scoreTable[3]
+wishList       = scoreTable[4]
+#-------------------------------------------------------------------------------
+print wishList
+
+
+
+
+end = timer()
+print str(end - start) + " seconds elapsed!"
+
 
 #choosingList = give_choosingList()
 
