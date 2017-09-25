@@ -6,12 +6,10 @@ import random
 import math
 import sys
 import matplotlib.pyplot as plt
-import os
 
-def give_testScoreMatrix():
-    #creat scorematrix for testing purpose
+def give_testWishList():#TEST: creates a random wishlist
     Listmatrix = []
-    for student in range(40):
+    for _ in range(40):
         wahlMoeglichkeit = []
         for n in range(1,16):
             wahlMoeglichkeit.append(n)
@@ -20,11 +18,8 @@ def give_testScoreMatrix():
 
     return np.asarray(np.matrix(Listmatrix))
 
-def give_testSizeConstrains():
-    list = []
-    for n in range(15):
-        list.append(randrange(7,15))
-    return np.asarray(list)
+def give_testModuleSize():#TEST: creates a random module size list
+    return np.array(randrange(7,15) for _ in range(15))
 
 def test_moduleOccupancy(assignment):#checks if the assignment violates moduleSize constraints 
     return not len(np.where(moduleSize < assignment.sum(axis=0))[0]) > 0
@@ -68,7 +63,7 @@ def give_innerPermuation(zuordungMatrix):
         newZuordungMatrix[stud][mod1] = value2
         newZuordungMatrix[stud][mod2] = value1
 
-        if test_sizeConst(newZuordungMatrix) == True:
+        if test_moduleOccupancy(newZuordungMatrix) == True:
             return [newZuordungMatrix,False]
             break
 
@@ -143,10 +138,10 @@ def give_ModulPrio(auswahl):
     studB = auswahl[1][0]
     modulA= auswahl[0][1]
     modulB = auswahl[1][1]
-    prioStudAModulA = scoreMatrix[studA,modulA]
-    prioStudAModulB = scoreMatrix[studA, modulB]
-    prioStudBModulA = scoreMatrix[studB, modulA]
-    prioStudBModulB = scoreMatrix[studB, modulB]
+    prioStudAModulA = wishList[studA,modulA]
+    prioStudAModulB = wishList[studA, modulB]
+    prioStudBModulA = wishList[studB, modulA]
+    prioStudBModulB = wishList[studB, modulB]
 
     if prioStudAModulA < prioStudAModulB:
         studAChoice = modulA
@@ -159,14 +154,14 @@ def give_ModulPrio(auswahl):
         studBChoice = modulB
 
     if studAChoice == studBChoice:
-        if studMark[studA] > studMark[studB]:
+        if studentGrades[studA] > studentGrades[studB]:
             if studAChoice == modulA:
                 #alt ist besser
                 return False
             else:
                 #new ist besser
                 return True
-        elif studMark[studA] < studMark[studB]:
+        elif studentGrades[studA] < studentGrades[studB]:
             if studBChoice == modulB:
                 # alt ist besser
                 return False
@@ -177,16 +172,19 @@ def give_ModulPrio(auswahl):
             #sollte egal sein
             return True
 
-def give_optAssignmentMatrix(assignmentMatrix,sdtFactor,outerCycleCount,innerCycleCount,breakThreshold):#main loop function
+def give_optAssignmentMatrix(assignmentMatrix):#main loop function
 
     plotlist = [[],[]]
-    permutationStrength = 1.0
+    permutationStrength = .5
     counter = 0
     maxIterations = str(innerCycleCount * outerCycleCount)
-    print str(0).ljust(len(maxIterations ) + 1), "Permutations of", maxIterations, "done"
-    
+
     for step in range(outerCycleCount):#outer-loop is the actual step-count 
-        currentScore = give_score(assignmentMatrix, sdtFactor)#was oldouterscore
+        bestScore = give_score(assignmentMatrix, sdtFactor)
+        tmpScore = bestScore
+        
+        if step % 50 == 0:
+            print str(step * innerCycleCount).ljust(len(maxIterations)+1), "Permutations of", maxIterations, "done"
         
         for _ in range(innerCycleCount):#inner-loop determines locally the best step 
             newAssignmentMatrix = np.copy(assignmentMatrix)
@@ -194,26 +192,24 @@ def give_optAssignmentMatrix(assignmentMatrix,sdtFactor,outerCycleCount,innerCyc
             for __ in range(int(math.ceil(ex(permutationStrength)))):#exponential distribution gives how many permutations should be done
                 newAssignmentMatrix, newIsBetterDueToGrade =   rand_permutation(newAssignmentMatrix)
 
-            newScoreTmp = give_score(newAssignmentMatrix, sdtFactor)
+            newTmpScore = give_score(newAssignmentMatrix, sdtFactor)
 
-            if newScoreTmp[0] < currentScore[0]:
+            if newTmpScore[0] < tmpScore[0]:
                 assignmentMatrix = np.copy(newAssignmentMatrix)#not sure if deepcopy is correct ... was not before
-            elif newScoreTmp[0] == currentScore[0]:
+            #elif newTmpScore[0] == tmpScore[0]:
                 #2.dary choice due to mark
-                if newIsBetterDueToGrade:#students with better grades become their choice
-                    assignmentMatrix = np.copy(newAssignmentMatrix)
+             #   if newIsBetterDueToGrade:#students with better grades become their choice
+              #      assignmentMatrix = np.copy(newAssignmentMatrix)
 
                 #2.dary Choice due to standarddeviaion
                 #if newScore[1] < oldScore[1]:
                 #    zuordungMatrix = newZuordungMatrix
         newScore = give_score(assignmentMatrix, sdtFactor)
         
-        if step % 50 == 0:
-            print str(step * innerCycleCount).ljust(len(maxIterations)+1), "Permutations of", maxIterations, "done"
-        
-        plotlist[0].append(currentScore[0])
-        plotlist[1].append(currentScore[1])
-        if currentScore[0] - newScore[0] == 0 and currentScore[1] - newScore[1] == 0:
+
+        plotlist[0].append(bestScore[0])
+        plotlist[1].append(bestScore[1])
+        if bestScore[0] - newScore[0] == 0 and bestScore[1] - newScore[1] == 0:
             counter += 1
         else:
             counter = 0
@@ -221,7 +217,7 @@ def give_optAssignmentMatrix(assignmentMatrix,sdtFactor,outerCycleCount,innerCyc
             print "Premature break because in the last "+str(breakThreshold)+" tries was no improvement achieved!"
             break
 
-        currentScore = newScore#maybe deepcopy
+        bestScore = newScore#maybe deepcopy
 
 
     print "Final score is: "+ str(newScore)
@@ -263,14 +259,14 @@ def read_initialTable(path):#Function to read the initial matrix
 def write_finalTable(optZordungOutput):
 
     zuordungMatrix = optZordungOutput[0]
-    zuordungMatrix =  zuordungMatrix*scoreMatrix
+    zuordungMatrix =  zuordungMatrix*wishList
     allLines = []
     firstLine = []
     firstLine.append("")
-    for name in modName:
+    for name in moduleNames:
         firstLine.append(name)
     allLines.append(firstLine)
-    for index,name in enumerate(studName):
+    for index,name in enumerate(studentNames):
         line = []
         line.append(name)
         for zuordnung in zuordungMatrix[index]:
@@ -300,8 +296,8 @@ start = timer()
 #some weird constants that have to be described by Christoph--------------------
 sdtFactor       = 0#has to incorporated ...
 outerCycleCount = 1000
-innerCycleCount = 100
-breakThreshold  = 100
+innerCycleCount = 10
+breakThreshold  = 1000
 
 #path to the initial student table, has to be done via GUI
 path = r'ScoreTable _test.csv'
@@ -315,19 +311,22 @@ studentGrades  = scoreTable[3]
 wishList       = scoreTable[4]
 #-------------------------------------------------------------------------------
 
+#TEST---------------------------------
+wishList = give_testWishList()#-------
+moduleSize = give_testModuleSize()#---
+#-------------------------------------
 
-###MISSING METHOD## hiere sollten noch alle werte der tabelle auf richtigkeit uberpruft werden ...
+###MISSING METHOD## hier sollten noch alle werte der tabelle auf richtigkeit uberpruft werden ...
 
 #creation of the initial (random) assignment
 initAssignmentMatrix = give_initAssignmentMatrix(wishList)
-print sum(initAssignmentMatrix)
-print moduleSize
 
-optZordungOutput = give_optAssignmentMatrix(initAssignmentMatrix,sdtFactor,outerCycleCount,innerCycleCount,breakThreshold)
+#generating the best assignment
+optZordungOutput = give_optAssignmentMatrix(initAssignmentMatrix)
 
-#write_table(optZordungOutput)
+write_finalTable(optZordungOutput)
 
-#give_plot(optZordungOutput)
+give_plot(optZordungOutput)
 end = timer()
 print str(end - start) + " seconds elapsed!"
 
