@@ -8,6 +8,7 @@ Soon this part will be awesome
 * ordentliches README schreieben
 * ein ordenliches beispiel machen (Christoph)
 * stichproben test schreiben (Christoph)
+* in mehrere Files aufteilen
 
 ## Authors
 

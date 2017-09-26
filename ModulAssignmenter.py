@@ -6,6 +6,8 @@ import random
 import math
 import sys
 import matplotlib.pyplot as plt
+import os
+import ntpath
 
 def give_testWishList():#TEST: creates a random wishlist
     Listmatrix = []
@@ -252,6 +254,18 @@ def read_initialTable(path):#Function to read the initial matrix
 
 def write_finalTable(optZordungOutput):
 
+    os.chdir(os.path.dirname(path))
+    inputName = ntpath.basename(path).split(".")[0]
+    for n in range(1,100):
+    	folderName = "Results_"+str(inputName)+"_"+str(n)
+    	try:
+            os.mkdir(folderName)
+            os.chdir(folderName)
+            break
+    	except:
+    		"This error should have never happend!"
+
+
     zuordungMatrix = optZordungOutput[0]
     zuordungMatrix =  zuordungMatrix*rawWishList
     allLines = []
@@ -332,12 +346,12 @@ start = timer()
 
 #some weird constants that have to be described by Christoph--------------------
 sdtFactor       = 0			#Factor how strong the standard deviation should influence the score
-outerCycleCount = 1000		#Count of permutations
-innerCycleCount = 100		#Count of permutation to find the next best permutation
+outerCycleCount = 100		#Count of permutations
+innerCycleCount = 10		#Count of permutation to find the next best permutation
 breakThreshold  = 1000		#Count of how often the outer cycle should run without a change in score.
 
 #path to the initial student table, has to be done via GUI
-path = r'ScoreTable _test.csv'
+path = os.path.abspath('ScoreTable _test.csv')
 scoreTable = read_initialTable(path)
 
 #list of modules, their maximum size, students, their grades and the wishmatrix
