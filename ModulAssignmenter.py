@@ -309,7 +309,15 @@ def check_wishList(wishList,studentNames):
 			print "The Sum of his priorites is >>",n,"<< insteat of >>",prioSum,"<< which would be expected for >>",wishList.shape[1],"<< modules"
 			sys.exit() 
 
-				
+def give_testSamples():
+
+    for n in range(2):
+        randStud = randrange(len(studentNames))
+        randMod =  randrange(len(moduleNames))
+        print studentNames[randStud], " gave ", moduleNames[randMod], " a priority of ", rawWishList[randStud][randMod]
+    for n in range(2):
+        randMod =  randrange(len(moduleNames))
+ 				
 
 ################################################################################
 ################################ MAIN PROGRAM ##################################
