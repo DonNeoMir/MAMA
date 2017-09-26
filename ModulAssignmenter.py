@@ -197,23 +197,19 @@ def give_optAssignmentMatrix(assignmentMatrix):#main loop function
     print "Final score is: "+ str(newScore)
     return [assignmentMatrix, scoreList, stdList]
 
-def give_plot(optZordungOutput):
-    """
-    plt.plot(range(0, len(optZordungOutput[1][0] * innerCycleCount), innerCycleCount), optZordungOutput[1][0])
-    plt.axhline(y=6 * np.shape(optZordungOutput[0])[0], linewidth=1, color='r')
-    plt.ylabel('Score Value')
-    plt.ylabel('Count of Permuations')
-    """
-    f, axarr = plt.subplots(2, sharex=True)
-    axarr[0].plot(range(0, len(optZordungOutput[1][0] * innerCycleCount), innerCycleCount), optZordungOutput[1][0])
-    axarr[0].axhline(y=(func(1)+func(2)+func(3)) * np.shape(optZordungOutput[0])[0], linewidth=1, color='r')
-    axarr[1].plot(range(0, len(optZordungOutput[1][0] * innerCycleCount), innerCycleCount), optZordungOutput[1][1])
-    axarr[1].set_xlabel("Trys of Permuations")
-    axarr[0].set_ylabel("Score Value")
-    axarr[1].set_ylabel("Standard Deviation")
+def give_plot(scoreList, stdList):#plots the score and std
 
-    axarr[0].annotate('Final score of '+str(optZordungOutput[1][0][-1]), xy=(0.9, 0.9), xycoords='axes fraction', fontsize=16, horizontalalignment='right', verticalalignment='top')
-    axarr[1].annotate('Final StadDev of '+str(optZordungOutput[1][1][-1])[:4], xy=(0.9, 0.9), xycoords='axes fraction', fontsize=16, horizontalalignment='right',verticalalignment='top')
+    _, axarr = plt.subplots(2, sharex=True)
+    
+    axarr[0].plot(range(0, len(scoreList * innerCycleCount), innerCycleCount), scoreList)
+    axarr[0].axhline(y=(func(1) + func(2) + func(3)) * len(studentNames), linewidth=1, color='r')
+    axarr[0].set_ylabel("Score Value")
+    axarr[0].annotate('Final score of '+ str(scoreList[-1]), xy=(0.9, 0.9), xycoords='axes fraction', fontsize=16, horizontalalignment='right', verticalalignment='top')
+    
+    axarr[1].plot(range(0, len(stdList * innerCycleCount), innerCycleCount), stdList)
+    axarr[1].set_xlabel("Tries of Permutations")
+    axarr[1].set_ylabel("Standard Deviation")
+    axarr[1].annotate('Final StadDev of '+str(stdList[-1])[:4], xy=(0.9, 0.9), xycoords='axes fraction', fontsize=16, horizontalalignment='right',verticalalignment='top')
 
     plt.show()
 
@@ -266,7 +262,6 @@ def write_finalTable(assignmentMatrix):
         f.write(name + "," + ",".join(map(str,assignmentMatrix[index])) + "\n")
 
     f.close()
-
 
 def check_studentGrades(studentGrades,studentNames):
 	for index,grad in enumerate(studentGrades):
@@ -330,7 +325,7 @@ start = timer()
 
 #Constants that describe the optimization process-------------------------------
 sdtFactor       = 0			#Factor how strong the standard deviation should influence the score
-outerCycleCount = 100		#Count of permutations
+outerCycleCount = 1000		#Count of permutations
 innerCycleCount = 10		#Count of permutation to find the next best permutation
 breakThreshold  = 1000		#Count of how often the outer cycle should run without a change in score.
 
