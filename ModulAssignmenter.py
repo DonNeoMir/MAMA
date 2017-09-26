@@ -90,48 +90,40 @@ def give_randPermutation(assignmentMatrix):#chooses to permutate inner or intra 
 
     return [newAssignmentMatrix,newIsBetterDueToMark]
 
-def give_modulPrio(auswahl):
-    studA = auswahl[0][0]
-    studB = auswahl[1][0]
-    modulA= auswahl[0][1]
-    modulB = auswahl[1][1]
-    prioStudAModulA = wishList[studA,modulA]
-    prioStudAModulB = wishList[studA, modulB]
-    prioStudBModulA = wishList[studB, modulA]
-    prioStudBModulB = wishList[studB, modulB]
-
-    if prioStudAModulA < prioStudAModulB:
-        studAChoice = modulA
-    else:
-        studAChoice = modulB
-
-    if prioStudBModulA< prioStudBModulB:
-        studBChoice = modulA
-    else:
-        studBChoice = modulB
+def give_modulPrio(auswahl):#estimates if one students get into a module due to a better grade
+    [[studA, moduleA], [studB, moduleB]] = auswahl
+    
+    prioStudAModulA = wishList[studA][moduleA]
+    prioStudAModulB = wishList[studA][moduleB]
+    prioStudBModulA = wishList[studB][moduleA]
+    prioStudBModulB = wishList[studB][moduleB]
+    
+    studAChoice = [moduleB, moduleA][prioStudAModulA < prioStudAModulB]
+    studBChoice = [moduleB, moduleA][prioStudBModulA < prioStudBModulB]
 
     if studAChoice == studBChoice:
         if studentGrades[studA] > studentGrades[studB]:
-            if studAChoice == modulA:
-                #alt ist besser
+            if studAChoice == moduleA:
+                #old module A is better for studA
                 return False
             else:
-                #new ist besser
+                #new module B is better for studA
                 return True
         elif studentGrades[studA] < studentGrades[studB]:
-            if studBChoice == modulB:
-                # alt ist besser
+            if studBChoice == moduleB:
+                #old module B is better for studB
                 return False
             else:
-                # new ist besser
+                #new module A is better for studB
                 return True
         else:
-            #sollte egal sein
+            #does not matter which assignment to take
             return True
 
 def give_optAssignmentMatrix(assignmentMatrix):#main loop function
 
-    plotlist = [[],[]]
+    scoreList = []
+    stdList = []
     permutationStrength = .5
     counter = 0
     maxIterations = str(innerCycleCount * outerCycleCount)
@@ -164,8 +156,8 @@ def give_optAssignmentMatrix(assignmentMatrix):#main loop function
         newScore = give_score(assignmentMatrix, sdtFactor)
         
 
-        plotlist[0].append(bestScore[0])
-        plotlist[1].append(bestScore[1])
+        scoreList.append(bestScore[0])
+        stdList.append(bestScore[1])
         if bestScore[0] - newScore[0] == 0 and bestScore[1] - newScore[1] == 0:
             counter += 1
         else:
@@ -178,7 +170,7 @@ def give_optAssignmentMatrix(assignmentMatrix):#main loop function
 
 
     print "Final score is: "+ str(newScore)
-    return [assignmentMatrix,plotlist]
+    return [assignmentMatrix, scoreList, stdList]
 
 def give_plot(optZordungOutput):
     """
@@ -226,32 +218,16 @@ def read_initialTable(path):#Function to read the initial matrix
 
     return [moduleNames, moduleSize, studentNames, studentGrades, wishList]
 
+def write_finalTable(assignmentMatrix):
 
-def write_finalTable(optZordungOutput):
-
-    zuordungMatrix = optZordungOutput[0]
-    zuordungMatrix =  zuordungMatrix*rawWishList
-    allLines = []
-    firstLine = []
-    firstLine.append("")
-    for name in moduleNames:
-        firstLine.append(name)
-    allLines.append(firstLine)
-    for index,name in enumerate(studentNames):
-        line = []
-        line.append(name)
-        for zuordnung in zuordungMatrix[index]:
-            line.append(zuordnung)
-        allLines.append(line)
+    assignmentMatrix *= rawWishList
 
     f = open('FinalAssigment.csv', 'w')
-    for line in allLines:
-        for index,zelle in enumerate(line):
-            if index < len(line)-1:
-                f.write(str(zelle)+",")  # python will convert \n to os.linesep
-            else:
-                f.write(str(zelle) + "\n")
+    
+    f.write("," + ",".join(moduleNames) + "\n")
 
+    for index,name in enumerate(studentNames):
+        f.write(name + "," + ",".join(map(str,assignmentMatrix[index])) + "\n")
 
     f.close()
 
@@ -307,17 +283,17 @@ def check_wishList(wishList,studentNames):
 from timeit import default_timer as timer
 start = timer()
 
-#some weird constants that have to be described by Christoph--------------------
+#Constants that describe the optimization process-------------------------------
 sdtFactor       = 0#has to incorporated ...
-outerCycleCount = 100
+outerCycleCount = 1000
 innerCycleCount = 10
 breakThreshold  = 1000
 
-#path to the initial student table, has to be done via GUI
+#path to the initial student table, has to be done via GUI----------------------
 path = r'ScoreTable _test.csv'
 scoreTable = read_initialTable(path)
 
-#list of modules, their maximum size, students, their grades and the wishmatrix
+#list of modules, their maximum size, students, their grades and the wishmatrix-
 moduleNames    = scoreTable[0]
 moduleSize     = scoreTable[1]
 studentNames   = scoreTable[2]
@@ -325,26 +301,25 @@ studentGrades  = scoreTable[3]
 wishList       = scoreTable[4]
 
 #TEST---------------------------------
-#wishList = give_testWishList()#-------
-#moduleSize = give_testModuleSize()#---
+ishList = give_testWishList()#-------
+moduleSize = give_testModuleSize()#---
 #-------------------------------------
 
-#Weighting of the wishList with a deifferent function (best and worst get more weight)
+#Weighting of the wishList with a different function (best and worst get more weight)
 func = np.vectorize(lambda x: (5. - x)/(x*(x-16.)))
 rawWishList = wishList
 wishList = func(wishList)
 
-###MISSING METHOD## hier sollten noch alle werte der tabelle auf richtigkeit uberpruft werden ...
-
-#creation of the initial (random) assignment
+#creation of the initial (random) assignment------------------------------------
 initAssignmentMatrix = give_initAssignmentMatrix(wishList)
 
-#generating the best assignment
-optimalAssignmentMatrix = give_optAssignmentMatrix(initAssignmentMatrix)
+#finding the best assignment----------------------------------------------------
+optimalAssignmentMatrix, scoreList, stdList = give_optAssignmentMatrix(initAssignmentMatrix)
 
+#OUTPUT-------------------------------------------------------------------------
 write_finalTable(optimalAssignmentMatrix)
+give_plot(scoreList, stdList)
 
-give_plot(optimalAssignmentMatrix)
 
 end = timer()
 print str(end - start) + " seconds elapsed!"
