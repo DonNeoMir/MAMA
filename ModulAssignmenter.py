@@ -61,43 +61,20 @@ def give_innerPermutation(assignmentMatrix):#one random student swaps
         if test_moduleOccupancy(assignmentMatrix):
             return [assignmentMatrix, False]#Here is maybe a breaking criteria missing ....
 
-def give_outerPermutation(oldZuordungMatrix):
-    #module zwischen studenten werden getauscht
-    innerZuordungMatrix = np.copy(oldZuordungMatrix)
-    einserCoord = np.where(innerZuordungMatrix==1)
-    tulpIndexA = randrange(np.shape(einserCoord)[1])
-    studA = einserCoord[0][tulpIndexA]
-    modulA = einserCoord[1][tulpIndexA]
-
+def give_outerPermutation(assignmentMatrix):#two random students swap their modules
+    studA   = randrange(np.shape(assignmentMatrix)[0])
+    moduleA = random.choice(np.where(assignmentMatrix[studA] == 1)[0])
+    
     while True:
-        tulpIndexB = randrange(np.shape(einserCoord)[1])
-        studB = einserCoord[0][tulpIndexB]
-        modulB = einserCoord[1][tulpIndexB]
-        #NullerCheck
-        if innerZuordungMatrix[studB][modulA] == 0 and innerZuordungMatrix[studA][modulB] ==0:
-            #return [innerZuordungMatrix,[[studA,modulA],[studB,modulB]]]
-            break
-
-    innerZuordungMatrix[studA][modulA] = 0
-    innerZuordungMatrix[studB][modulB] = 0
-    innerZuordungMatrix[studA][modulB] = 1
-    innerZuordungMatrix[studB][modulA] = 1
-    return [innerZuordungMatrix, [[studA, modulA], [studB, modulB]]]
-    #return [innerZuordungMatrix,studA,studB,modulA,modulB]
-
-
-    """
-    print oldZuordungMatrix[studA][modulA], "<--- studA modul A"
-    print oldZuordungMatrix[studA][modulB], "<--- studA modul B"
-    print oldZuordungMatrix[studB][modulA], "<--- studB modul A"
-    print oldZuordungMatrix[studB][modulB], "<--- studB modul B"
-    print ""
-    print innerZuordungMatrix[studA][modulA], "<--- studA modul A"
-    print innerZuordungMatrix[studA][modulB], "<--- studA modul B"
-    print innerZuordungMatrix[studB][modulA], "<--- studB modul A"
-    print innerZuordungMatrix[studB][modulB], "<--- studB modul B"
-    print np.array_equal(innerZuordungMatrix, zuordungMatrix)
-    """
+        studB   = randrange(np.shape(assignmentMatrix)[0])
+        moduleB = random.choice(np.where(assignmentMatrix[studB] == 1)[0])
+        #Check whether one of the students is already in the module he will go in
+        if assignmentMatrix[studB][moduleA] == 0 and assignmentMatrix[studA][moduleB] ==0:
+            assignmentMatrix[studA][moduleA] = 0
+            assignmentMatrix[studB][moduleB] = 0
+            assignmentMatrix[studA][moduleB] = 1
+            assignmentMatrix[studB][moduleA] = 1
+            return [assignmentMatrix, [[studA, moduleA], [studB, moduleB]]]
 
 def give_randPermutation(assignmentMatrix):#chooses to permutate inner or intra student
     if random.randint(1, 2) == 1:
