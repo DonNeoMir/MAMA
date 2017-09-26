@@ -253,7 +253,7 @@ def read_initialTable(path):#Function to read the initial matrix
 def write_finalTable(optZordungOutput):
 
     zuordungMatrix = optZordungOutput[0]
-    zuordungMatrix =  zuordungMatrix*wishList
+    zuordungMatrix =  zuordungMatrix*rawWishList
     allLines = []
     firstLine = []
     firstLine.append("")
@@ -316,7 +316,7 @@ def check_wishList(wishList,studentNames):
 
 	for index,n in enumerate(np.sum(wishList.astype(np.int), axis=1)):
 		if prioSum != n:
-			print "At least Student >>",studentNames[index],"<< has not used all prioritie."
+			print "At least Student >>",studentNames[n],"<< has not used all prioritie."
 			print "The Sum of his priorites is >>",n,"<< insteat of >>",prioSum,"<< which would be expected for >>",wishList.shape[1],"<< modules"
 			sys.exit() 
 
@@ -354,6 +354,7 @@ wishList       = scoreTable[4]
 
 #Weighting of the wishList with a deifferent function (best and worst get more weight)
 func = np.vectorize(lambda x: (5. - x)/(x*(x-16.)))
+rawWishList = wishList
 wishList = func(wishList)
 
 ###MISSING METHOD## hier sollten noch alle werte der tabelle auf richtigkeit uberpruft werden ...
