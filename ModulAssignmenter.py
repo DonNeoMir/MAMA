@@ -206,17 +206,31 @@ def read_initialTable(path):#Function to read the initial matrix
         ncols = len(f.readline().split(','))-1
 
     moduleNames   = np.loadtxt(path, delimiter=',', skiprows=0, dtype="str", usecols=range(1, ncols ))[0]
-    moduleSize    = np.loadtxt(path, delimiter=',', skiprows=1, dtype="int", usecols=range(1, ncols ))[0]
     studentNames  = np.loadtxt(path, delimiter=',', skiprows=2, dtype="str", usecols=range(1))
-    studentGrades = np.loadtxt(path, delimiter=',', skiprows=2, dtype="str", usecols=[ncols])
-    wishList      = np.loadtxt(path, delimiter=',', skiprows=2, dtype="int", usecols=range(1, ncols ))
+
+    try:
+    	moduleSize    = np.loadtxt(path, delimiter=',', skiprows=1, dtype="int", usecols=range(1, ncols ))[0]
+    finally:
+    	check_moduleSize(np.loadtxt(path, delimiter=',', skiprows=1, dtype="str", usecols=range(1, ncols ))[0],moduleNames)
+    
+
+    try:
+    	studentGrades = np.loadtxt(path, delimiter=',', skiprows=2, dtype="int", usecols=[ncols])
+    finally:
+    	check_studentGrades(np.loadtxt(path, delimiter=',', skiprows=2, dtype="str", usecols=[ncols]),studentNames)
+    	
+    try:
+    	wishList      = np.loadtxt(path, delimiter=',', skiprows=2, dtype="int", usecols=range(1, ncols ))
+    finally:
+    	check_wishList(np.loadtxt(path, delimiter=',', skiprows=2, dtype="str", usecols=range(1, ncols )),studentNames)
 
     return [moduleNames, moduleSize, studentNames, studentGrades, wishList]
+
 
 def write_finalTable(optZordungOutput):
 
     zuordungMatrix = optZordungOutput[0]
-    zuordungMatrix =  zuordungMatrix*wishList
+    zuordungMatrix =  zuordungMatrix*rawWishList
     allLines = []
     firstLine = []
     firstLine.append("")
@@ -242,6 +256,49 @@ def write_finalTable(optZordungOutput):
     f.close()
 
 
+def check_studentGrades(studentGrades,studentNames):
+	for index,grad in enumerate(studentGrades):
+		try:
+			int(grad)
+		except ValueError:
+			print "At least Student ",studentNames[index], " does not have a intiger as a Grad assignt to him."
+			print "The Value assignt to him is >>",grad,"<<. (For help look at example)!" 
+			sys.exit()
+		else:
+			if float(grad)>= 0 and float(grad)<=100:
+				pass
+			else:
+				print "At least Student ",studentNames[index], " does not have a Number between 0 and 100 as a Grad assignt to him." 
+				print "The Value assignt to him is >>",grad,"<<. (For help look at example)!" 
+				sys.exit()
+
+def check_moduleSize(moduleSize, moduleNames):
+	for index,size in enumerate(moduleSize):
+		try:
+			int(size)
+		except ValueError:
+			print "At least Module ",moduleNames[index], " does not have a integer as a max. size assignt to it."
+			print "The Value assignt to it is >>",size,"<<. (For help look at example)!" 
+			sys.exit() 
+		else:
+			if  set(range(1,len(moduleSize)+1)) == set(map(int, moduleSize)):
+				print "The modulesize inlcudes every number from 1 to 15 so i guess this is a priority list of a student, so i better stopt here."
+				print "(For help look at example)!"
+				sys.exit() 
+
+def check_wishList(wishList,studentNames):
+	prioSum = 0
+	for  n in range(wishList.shape[1]+1):
+		prioSum += n
+
+	for index,n in enumerate(np.sum(wishList.astype(np.int), axis=1)):
+		if prioSum != n:
+			print "At least Student >>",studentNames[n],"<< has not used all prioritie."
+			print "The Sum of his priorites is >>",n,"<< insteat of >>",prioSum,"<< which would be expected for >>",wishList.shape[1],"<< modules"
+			sys.exit() 
+
+				
+
 ################################################################################
 ################################ MAIN PROGRAM ##################################
 ################################################################################
@@ -252,8 +309,8 @@ start = timer()
 
 #some weird constants that have to be described by Christoph--------------------
 sdtFactor       = 0#has to incorporated ...
-outerCycleCount = 1000
-innerCycleCount = 100
+outerCycleCount = 100
+innerCycleCount = 10
 breakThreshold  = 1000
 
 #path to the initial student table, has to be done via GUI
@@ -266,15 +323,15 @@ moduleSize     = scoreTable[1]
 studentNames   = scoreTable[2]
 studentGrades  = scoreTable[3]
 wishList       = scoreTable[4]
-#-------------------------------------------------------------------------------
 
 #TEST---------------------------------
-wishList = give_testWishList()#-------
-moduleSize = give_testModuleSize()#---
+#wishList = give_testWishList()#-------
+#moduleSize = give_testModuleSize()#---
 #-------------------------------------
 
 #Weighting of the wishList with a deifferent function (best and worst get more weight)
 func = np.vectorize(lambda x: (5. - x)/(x*(x-16.)))
+rawWishList = wishList
 wishList = func(wishList)
 
 ###MISSING METHOD## hier sollten noch alle werte der tabelle auf richtigkeit uberpruft werden ...
