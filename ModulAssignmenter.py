@@ -6,6 +6,8 @@ import random
 import math
 import sys
 import matplotlib.pyplot as plt
+import os
+import ntpath
 
 def give_testWishList():#TEST: creates a random wishlist
     Listmatrix = []
@@ -61,20 +63,43 @@ def give_innerPermutation(assignmentMatrix):#one random student swaps
         if test_moduleOccupancy(assignmentMatrix):
             return [assignmentMatrix, False]#Here is maybe a breaking criteria missing ....
 
-def give_outerPermutation(assignmentMatrix):#two random students swap their modules
-    studA   = randrange(np.shape(assignmentMatrix)[0])
-    moduleA = random.choice(np.where(assignmentMatrix[studA] == 1)[0])
-    
+def give_outerPermutation(oldZuordungMatrix):
+    #module zwischen studenten werden getauscht
+    innerZuordungMatrix = np.copy(oldZuordungMatrix)
+    einserCoord = np.where(innerZuordungMatrix==1)
+    tulpIndexA = randrange(np.shape(einserCoord)[1])
+    studA = einserCoord[0][tulpIndexA]
+    modulA = einserCoord[1][tulpIndexA]
+
     while True:
-        studB   = randrange(np.shape(assignmentMatrix)[0])
-        moduleB = random.choice(np.where(assignmentMatrix[studB] == 1)[0])
-        #Check whether one of the students is already in the module he will go in
-        if assignmentMatrix[studB][moduleA] == 0 and assignmentMatrix[studA][moduleB] ==0:
-            assignmentMatrix[studA][moduleA] = 0
-            assignmentMatrix[studB][moduleB] = 0
-            assignmentMatrix[studA][moduleB] = 1
-            assignmentMatrix[studB][moduleA] = 1
-            return [assignmentMatrix, [[studA, moduleA], [studB, moduleB]]]
+        tulpIndexB = randrange(np.shape(einserCoord)[1])
+        studB = einserCoord[0][tulpIndexB]
+        modulB = einserCoord[1][tulpIndexB]
+        #NullerCheck
+        if innerZuordungMatrix[studB][modulA] == 0 and innerZuordungMatrix[studA][modulB] ==0:
+            #return [innerZuordungMatrix,[[studA,modulA],[studB,modulB]]]
+            break
+
+    innerZuordungMatrix[studA][modulA] = 0
+    innerZuordungMatrix[studB][modulB] = 0
+    innerZuordungMatrix[studA][modulB] = 1
+    innerZuordungMatrix[studB][modulA] = 1
+    return [innerZuordungMatrix, [[studA, modulA], [studB, modulB]]]
+    #return [innerZuordungMatrix,studA,studB,modulA,modulB]
+
+
+    """
+    print oldZuordungMatrix[studA][modulA], "<--- studA modul A"
+    print oldZuordungMatrix[studA][modulB], "<--- studA modul B"
+    print oldZuordungMatrix[studB][modulA], "<--- studB modul A"
+    print oldZuordungMatrix[studB][modulB], "<--- studB modul B"
+    print ""
+    print innerZuordungMatrix[studA][modulA], "<--- studA modul A"
+    print innerZuordungMatrix[studA][modulB], "<--- studA modul B"
+    print innerZuordungMatrix[studB][modulA], "<--- studB modul A"
+    print innerZuordungMatrix[studB][modulB], "<--- studB modul B"
+    print np.array_equal(innerZuordungMatrix, zuordungMatrix)
+    """
 
 def give_randPermutation(assignmentMatrix):#chooses to permutate inner or intra student
     if random.randint(1, 2) == 1:
@@ -181,7 +206,7 @@ def give_plot(optZordungOutput):
     """
     f, axarr = plt.subplots(2, sharex=True)
     axarr[0].plot(range(0, len(optZordungOutput[1][0] * innerCycleCount), innerCycleCount), optZordungOutput[1][0])
-#    axarr[0].axhline(y=6 * np.shape(optZordungOutput[0])[0], linewidth=1, color='r')
+    axarr[0].axhline(y=(func(1)+func(2)+func(3)) * np.shape(optZordungOutput[0])[0], linewidth=1, color='r')
     axarr[1].plot(range(0, len(optZordungOutput[1][0] * innerCycleCount), innerCycleCount), optZordungOutput[1][1])
     axarr[1].set_xlabel("Trys of Permuations")
     axarr[0].set_ylabel("Score Value")
@@ -221,6 +246,17 @@ def read_initialTable(path):#Function to read the initial matrix
 def write_finalTable(assignmentMatrix):
 
     assignmentMatrix *= rawWishList
+
+    os.chdir(os.path.dirname(path))
+    inputName = ntpath.basename(path).split(".")[0]
+    for n in range(1,100):
+    	folderName = "Results_"+str(inputName)+"_"+str(n)
+    	try:
+            os.mkdir(folderName)
+            os.chdir(folderName)
+            break
+    	except:
+    		"This error should have never happend!"
 
     f = open('FinalAssigment.csv', 'w')
     
@@ -283,14 +319,15 @@ def check_wishList(wishList,studentNames):
 from timeit import default_timer as timer
 start = timer()
 
-#Constants that describe the optimization process-------------------------------
-sdtFactor       = 0#has to incorporated ...
-outerCycleCount = 1000
-innerCycleCount = 10
-breakThreshold  = 1000
 
-#path to the initial student table, has to be done via GUI----------------------
-path = r'ScoreTable _test.csv'
+#Constants that describe the optimization process-------------------------------
+sdtFactor       = 0			#Factor how strong the standard deviation should influence the score
+outerCycleCount = 100		#Count of permutations
+innerCycleCount = 10		#Count of permutation to find the next best permutation
+breakThreshold  = 1000		#Count of how often the outer cycle should run without a change in score.
+
+#path to the initial student table, has to be done via GUI
+path = os.path.abspath('ScoreTable _test.csv')
 scoreTable = read_initialTable(path)
 
 #list of modules, their maximum size, students, their grades and the wishmatrix-
@@ -301,7 +338,7 @@ studentGrades  = scoreTable[3]
 wishList       = scoreTable[4]
 
 #TEST---------------------------------
-ishList = give_testWishList()#-------
+wishList = give_testWishList()#-------
 moduleSize = give_testModuleSize()#---
 #-------------------------------------
 
