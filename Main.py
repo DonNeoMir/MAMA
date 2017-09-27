@@ -18,5 +18,5 @@ if __name__ == '__main__':
     optimalAssignmentMatrix, scoreList, stdList = RunOptimizer(values)
     
     #OUTPUT---------------------------------------------------------------------
-    SaveFinalTable(values)
+    SaveFinalTable(rawWishList      = values.rawWishList)
     values.plot.Save()

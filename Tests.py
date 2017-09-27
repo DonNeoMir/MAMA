@@ -2,6 +2,7 @@ import numpy as np
 import sys
 from random import shuffle, randrange
 
+
 #checks if the assignment violates moduleSize constraints-----------------------
 def moduleOccupancy(assignment, moduleSize):
     return not len(np.where(moduleSize < assignment.sum(axis=0))[0]) > 0
