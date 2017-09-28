@@ -31,7 +31,7 @@ class Plot:
         
         for stud in range (0,rawWishList.shape[0]):
             for prio in range(1,rawWishList.shape[1]+1):
-                for index, modul in enumerate(rawWishList[1]):
+                for index, modul in enumerate(rawWishList[stud]):
                     if modul == prio:
                         prioOrderedMatrix[stud][prio-1] = assignmentMatrix[stud][index]
         prioOrderedMatrix = prioOrderedMatrix.astype(int)
