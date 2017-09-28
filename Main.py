@@ -15,8 +15,8 @@ if __name__ == '__main__':
     
     #finding the best assignment------------------------------------------------
     
-    optimalAssignmentMatrix, scoreList, stdList = RunOptimizer(values)
+    RunOptimizer(values)
     
     #OUTPUT---------------------------------------------------------------------
-    SaveFinalTable(optimalAssignmentMatrix, values)
+    SaveFinalTable(values)
     values.plot.Save()

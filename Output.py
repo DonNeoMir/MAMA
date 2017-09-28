@@ -2,7 +2,6 @@ import matplotlib.pyplot as plt
 import os
 import ntpath
 import numpy as np
-from assigmentTransformation import assignmentMatrix
 
 class Plot:
     
@@ -40,30 +39,24 @@ class Plot:
         self.axarr3.imshow(prioOrderedMatrix,cmap="RdYlGn", interpolation='nearest')
         plt.pause(0.1)
 
-    def Halt(self):
-        plt.pause(2)
-        
+    def Show(self):
+        plt.ioff()
+        plt.show()        
         
     def Save(self):
         self.fig.savefig('FinalPlot.png')
         return
     
     
-def SaveFinalTable(assignmentMatrix, values):
-    #assignmentMatrix = values.assignmentMatrix
+def SaveFinalTable(values):
+    assignmentMatrix = values.assignmentMatrix
     rawWishList      = values.rawWishList
     moduleNames      = values.moduleNames
     studentNames     = values.studentNames
     path             = values.ospath
     
-    print assignmentMatrix
-    print rawWishList
-    
     assignmentMatrix *= rawWishList
-    
-    
-    
-    print path
+
     os.chdir(os.path.dirname(path))
     inputName = ntpath.basename(path).split(".")[0]
     for n in range(1,100):

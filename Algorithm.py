@@ -114,7 +114,7 @@ def RunOptimizer(values):#Main running routine
                 #if newScore[1] < oldScore[1]:
                 #    zuordungMatrix = newZuordungMatrix
         newScore = evaluateScore(assignmentMatrix, wishList, sdtFactor)
-        
+        values.assignmentMatrix = assignmentMatrix
 
         scoreList.append(bestScore[0])
         stdList.append(bestScore[1])
@@ -130,10 +130,10 @@ def RunOptimizer(values):#Main running routine
         
         if step % 50 == 0:
             print str(step * innerCycleCount).ljust(len(maxIterations)), "Permutations of", maxIterations, "done"
-            #plot.Draw(step, bestScore[0], bestScore[1])
-            #plot.DrawHeat(assignmentMatrix,rawWishList)
+            plot.Draw(step, bestScore[0], bestScore[1])
+            plot.DrawHeat(assignmentMatrix,rawWishList)
     
-    plot.Halt()
+    plot.Show()
     print "Final score is: "+ str(newScore)
     return [assignmentMatrix, scoreList, stdList]
     
