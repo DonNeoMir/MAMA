@@ -8,6 +8,7 @@ import sys
 import matplotlib.pyplot as plt
 import os
 import ntpath
+import time
 
 def give_initAssignmentMatrix(wishList):#creates an initial assignment
     (n, m) = np.shape(wishList)
@@ -59,7 +60,7 @@ def read_initialTable(path):#Function to read the initial matrix
 
     return [moduleNames, moduleSize, studentNames, studentGrades, wishList]
 
-path = os.path.abspath('ScoreTable _test.csv')
+path = os.path.abspath('ScoreTable_test.csv')
 
 
 scoreTable = read_initialTable(path)
@@ -68,14 +69,19 @@ moduleSize     = scoreTable[1]
 studentNames   = scoreTable[2]
 studentGrades  = scoreTable[3]
 wishList       = scoreTable[4]
-assignmentMatrix = give_initAssignmentMatrix(wishList)
+
 
 studenList=[]
 for n in range(1,41):
     studenList.append("Student_"+str(n))
 
+assignmentMatrix = give_initAssignmentMatrix(wishList)  
 
-#Hier gehts los!!!!!!!!!!!!!!!!!!!!!!!!
+###############################################
+###############################################
+#Hier gehts los!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+###############################################
+###############################################
 
 def give_prioOrderedMatrix(assignmentMatrix,wishList):
     #reorders the assignmentMatrix so that the colums no longer represent the Modul but the prio.
@@ -90,8 +96,23 @@ def give_prioOrderedMatrix(assignmentMatrix,wishList):
 
 
 
-plt.imshow(give_prioOrderedMatrix(assignmentMatrix,wishList),cmap="RdYlGn", interpolation='nearest')
+
+fig = plt.figure('matrix figure')
+ax = fig.add_subplot(313)
+#plt.figure('matrix figure') 
 plt.yticks(range(40), studenList)
+plt.xticks(range(15), range(1,16))
 plt.xlabel("Module Priority")
 
-plt.show()
+
+for n in range(10):
+    assignmentMatrix = give_initAssignmentMatrix(wishList)
+    
+    ax.imshow(give_prioOrderedMatrix(assignmentMatrix,wishList),cmap="RdYlGn", interpolation='nearest')
+    plt.xlabel("Module Priority"+str(n))
+    plt.ion()
+    plt.show()
+    plt.pause(0.1)
+    #plt.clf()
+#plt.imshow(give_prioOrderedMatrix(assignmentMatrix,wishList),cmap="RdYlGn", interpolation='nearest')
+

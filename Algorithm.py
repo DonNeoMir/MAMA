@@ -86,6 +86,7 @@ def RunOptimizer(values):#Main running routine
     studentGrades    = values.studentGrades
     moduleSize       = values.moduleSize
     plot             = values.plot
+    rawWishList      = values.rawWishList
     
     scoreList = []
     stdList = []
@@ -130,6 +131,7 @@ def RunOptimizer(values):#Main running routine
         if step % 50 == 0:
             print str(step * innerCycleCount).ljust(len(maxIterations)), "Permutations of", maxIterations, "done"
             plot.Draw(step, bestScore[0], bestScore[1])
+            plot.DrawHeat(assignmentMatrix,rawWishList)
     
     plot.Halt()
     print "Final score is: "+ str(newScore)

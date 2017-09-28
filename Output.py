@@ -1,11 +1,12 @@
 import matplotlib.pyplot as plt
 import os
 import ntpath
+import numpy as np
 
 class Plot:
     def __init__(self, func):
         plt.ion()
-        self.fig, self.axarr = plt.subplots(2, sharex=True) 
+        self.fig, self.axarr = plt.subplots(3, sharex=True) 
         self.axarr[0].set_ylabel("Score Value")
         self.axarr[0].axhline(y=(func(1) + func(2) + func(3)) * 40, linewidth=1, color='r')
         
@@ -20,7 +21,20 @@ class Plot:
         self.axarr[1].scatter(step, std, color="green")
         #self.axarr[1].annotate('Final StadDev of '+str(stdList[-1])[:4], xy=(0.9, 0.9), xycoords='axes fraction', fontsize=16, horizontalalignment='right',verticalalignment='top')
         plt.pause(0.1)
-    
+
+    def DrawHeat(self, assignmentMatrix,rawWishList):
+
+        prioOrderedMatrix = np.empty([rawWishList.shape[0],rawWishList.shape[1]])
+        for stud in range (0,rawWishList.shape[0]):
+            for prio in range(1,rawWishList.shape[1]+1):
+                for index, modul in enumerate(rawWishList[1]):
+                    if modul == prio:
+                        prioOrderedMatrix[stud][prio-1] = assignmentMatrix[stud][index]
+        prioOrderedMatrix = prioOrderedMatrix.astype(int)
+        ax = self.fig.add_subplot(313)
+        ax.imshow(prioOrderedMatrix,cmap="RdYlGn", interpolation='nearest')
+        plt.pause(0.1)
+
     def Halt(self):
         plt.pause(2)
         
