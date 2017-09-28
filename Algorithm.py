@@ -2,8 +2,7 @@ import numpy as np
 from math import ceil
 from random import expovariate as ex, randrange, choice, randint
 from Tests import moduleOccupancy
-from Output import Plot
-    
+ 
 def evaluateScore(assignmentMatrix, wishList,  fac):#calculates the current sore and standard deviation over each students score
     produktMatrix = assignmentMatrix*wishList
     return [np.sum(produktMatrix),np.std(produktMatrix.sum(axis=1))]
