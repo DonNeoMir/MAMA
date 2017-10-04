@@ -76,7 +76,7 @@ def modulPrio(auswahl, wishList, studentGrades):#estimates if one students get i
             #does not matter which assignment to take
             return True
 
-def RunOptimizer(values):#Main running routine
+def RunOptimizer(values, ID=None, que=None):#Main running routine
     assignmentMatrix = values.assignmentMatrix
     innerCycleCount  = values.innerCycleCount
     outerCycleCount  = values.outerCycleCount
@@ -123,17 +123,26 @@ def RunOptimizer(values):#Main running routine
         else:
             counter = 0
         if counter > breakThreshold:
-            print "Premature break because in the last "+str(breakThreshold)+" tries was no improvement achieved!"
+            if que:
+                que.put("Premature break because in the last " + str(breakThreshold) + " tries was no improvement achieved!")
+            else:
+                print "Premature break because in the last " + str(breakThreshold) + " tries was no improvement achieved!"
             break
 
         bestScore = newScore#maybe deepcopy
         
         if step % 50 == 0:
-            print str(step * innerCycleCount).ljust(len(maxIterations)), "Permutations of", maxIterations, "done"
+            if que:
+                que.put(str(step * innerCycleCount).ljust(len(maxIterations)) + " Permutations of " + maxIterations + " done")
+            else:
+                print str(step * innerCycleCount).ljust(len(maxIterations)), "Permutations of", maxIterations, "done"
             plot.Draw(step, bestScore[0], bestScore[1])
             plot.DrawHeat(assignmentMatrix,rawWishList)
     
-    plot.Show()
-    print "Final score is: "+ str(newScore)
+    #plot.Show()
+    if que:
+        que.put("Final score is: " + str(newScore))
+    else:
+        print "Final score is: " + str(newScore)
     return [assignmentMatrix, scoreList, stdList]
     
