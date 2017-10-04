@@ -5,7 +5,7 @@ import numpy as np
 
 class Plot:
     
-    def __init__(self, func):
+    def __init__(self):
         plt.ion()
         self.fig = plt.figure()#, (self.axarr, self.axarr1) = plt.subplots()
         self.axarr1 = self.fig.add_subplot(221)
@@ -13,7 +13,7 @@ class Plot:
         self.axarr3 = self.fig.add_subplot(122)
          
         self.axarr1.set_ylabel("Score Value")
-        self.axarr1.axhline(y=(func(1) + func(2) + func(3)) * 40, linewidth=1, color='r')
+        self.axarr1.axhline(y=100.0, linewidth=1, color='r')
         
         self.axarr2.set_xlabel("Tries of Permutations")
         self.axarr2.set_ylabel("Standard Deviation")

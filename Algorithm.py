@@ -87,11 +87,13 @@ def RunOptimizer(values, ID=None, que=None):#Main running routine
     moduleSize       = values.moduleSize
     plot             = values.plot
     rawWishList      = values.rawWishList
-    
-    scoreList = []
-    stdList = []
-    counter = 0
-    maxIterations = str(innerCycleCount * outerCycleCount)
+    optScore         = values.optScore
+    worstScore       = values.worstScore
+ 
+    scoreList        = []
+    stdList          = []
+    counter          = 0
+    maxIterations    = str(innerCycleCount * outerCycleCount)
 
     for step in range(outerCycleCount):#outer-loop is the actual step-count 
         bestScore = evaluateScore(assignmentMatrix, wishList,  sdtFactor)
@@ -136,13 +138,14 @@ def RunOptimizer(values, ID=None, que=None):#Main running routine
                 que.put(str(step * innerCycleCount).ljust(len(maxIterations)) + " Permutations of " + maxIterations + " done")
             else:
                 print str(step * innerCycleCount).ljust(len(maxIterations)), "Permutations of", maxIterations, "done"
-            plot.Draw(step, bestScore[0], bestScore[1])
+            plot.Draw(step, (newScore[0] - worstScore) /(optScore - worstScore) * 100, bestScore[1])
             plot.DrawHeat(assignmentMatrix,rawWishList)
     
-    #plot.Show()
+    plot.Show()
+    bestRelScore = str(round( (newScore[0] - worstScore) /(optScore - worstScore) * 100,2))
     if que:
-        que.put("Final score is: " + str(newScore))
+        que.put(bestRelScore +"% of the optimal Score has been reached.")
     else:
-        print "Final score is: " + str(newScore)
+        print bestRelScore +"% of the optimal Score has been reached." 
     return [assignmentMatrix, scoreList, stdList]
     

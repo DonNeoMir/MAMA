@@ -14,11 +14,16 @@ def statusConsole(text):
 	except Queue.Empty:
 		pass
 	else:
-		#t.delete('0', END)
 		text.config(state=NORMAL)
-		text.insert(END,'%s\n' % str(data))
+		
+		if "%" in str(data):
+			text.insert(END,'%s\n' % str(data), "highlight")
+		else:
+			text.insert(END,'%s\n' % str(data))
+			
 		text.see(END)
 		text.config(state=DISABLED)
+		text.tag_configure("highlight", foreground="green")
 	text.after(250, lambda: statusConsole(text))
 
 def chooseButtonCallback(path):
@@ -46,7 +51,7 @@ matplotlib.use("TkAgg")
 
 #Font constants----------------------------------------------
 font = "Comic Sans MS"
-bg = "grey"
+bg = "gray"
 #------------------------------------------------------------
 
 #Defining the GUI and window name and label------------------

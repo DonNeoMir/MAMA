@@ -83,8 +83,12 @@ class Initialize():
         self.rawWishList = wishList
         self.wishList = self.func(wishList)
         
+        #best and worst score possible
+        self.optScore   = len(self.studentNames)*( self.func(1) +  self.func(2) +  self.func(3))
+        self.worstScore = len(self.studentNames)*(self.func(15) + self.func(14) + self.func(13))
+        
         #Plot--------------------------------
-        self.plot = Plot(self.func)
+        self.plot = Plot()
         
         #creation of the initial (random) assignment------------------------------------
         self.assignmentMatrix = initialAssignmentMatrix(wishList, self.moduleSize)
