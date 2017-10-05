@@ -14,14 +14,36 @@ def DrawHeat(assignmentMatrix,rawWishList):
                 if modul == prio:
                     prioOrderedMatrix[stud][prio-1] = assignmentMatrix[stud][index]
     prioOrderedMatrix = prioOrderedMatrix.astype(int)
+    fig, ax = plt.subplots()
+    im = ax.imshow(prioOrderedMatrix,cmap="RdYlGn", interpolation='nearest')
+    #fig.colorbar(im)
+    xlabels = np.arange(1,16)
+    xlocs = np.arange(len(xlabels))
 
-    plt.imshow(prioOrderedMatrix,cmap="RdYlGn", interpolation='nearest')
-    #plt.minorticks_on()
-    plt.xticks( np.arange(0.5,15))#hier
-    plt.yticks( np.arange(0.5,40), range(1,41) )#hier
-    plt.grid(b=True, which='both', color='0.65',linestyle='-')
+    ylabels = np.arange(1,41)
+    ylocs = np.arange(len(ylabels))
+
+    ax.xaxis.set_ticks(xlocs + 0.5, minor=True)
+    ax.xaxis.set(ticks=xlocs, ticklabels=xlabels)
+    ax.yaxis.set_ticks(ylocs + 0.5, minor=True)
+    ax.yaxis.set(ticks=ylocs, ticklabels=ylabels)
+
+
+    # Turn on the grid for the minor ticks
+    ax.grid(True, which='minor')
+    """
+    ax.minorticks_on()
+
+
+    ax.xaxis.set_xticks( np.arange(1,15,2),np.arange(2,15,2))#hier
+    ax.xlabel("Modul Priority")#hier
+    ax.yticks( np.arange(1,40,2), [] )#hier
+    ax.ylabel("Students")#hier
+    ax.grid(True, which='minor', color='0.65',linestyle='-')
 
     #plt.grid(color='w', linestyle='-', linewidth=0.5)
+    """
+
     plt.show()
 
 
