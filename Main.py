@@ -5,13 +5,14 @@ from Initialize import Initialize
 from Algorithm import RunOptimizer
 from Output import SaveFinalTable
 
-def main(que=None, guiroot=None):    
+def main(que=None, guiroot=None, path=None):    
     #Initializing---------------------------------------------------------------
     #two variant, GUI with queue, or command line start
     if que:
+        que.put("---------------------------------------------------------")
         que.put("Start of the program")
         que.put("Initializing in progress...")
-        values = Initialize(guiroot)
+        values = Initialize(guiroot, que, path)
         que.put("Initializing completed!")
         #finding the best assignment--------------------------------------------
         RunOptimizer(values, que)

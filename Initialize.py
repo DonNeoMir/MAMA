@@ -1,10 +1,10 @@
 import os
 import numpy as np
 from random import randrange
-from Tests import moduleOccupancy, correctModuleSize, correctStudentGrades, correctWishList, randomModuleSize, randomWishList
+from Tests import moduleOccupancy, correctModuleSize, correctStudentGrades, correctWishList, randomModuleSize, randomWishList, correctPath
 from Output import Plot
 
-def read_initialTable(path):#Function to read the initial matrix
+def read_initialTable(path, que=None):#Function to read the initial matrix
 
     with open(path) as f:
         ncols = len(f.readline().split(','))-1
@@ -13,24 +13,27 @@ def read_initialTable(path):#Function to read the initial matrix
     studentNames  = np.loadtxt(path, delimiter=',', skiprows=2, dtype="str", usecols=range(1))
 
     try:
-        moduleSize    = np.loadtxt(path, delimiter=',', skiprows=1, dtype="int", usecols=range(1, ncols ))[0]
+        moduleSize = np.loadtxt(path, delimiter=',', skiprows=1, dtype="int", usecols=range(1, ncols ))[0]
     finally:
-        correctModuleSize(np.loadtxt(path, delimiter=',', skiprows=1, dtype="str", usecols=range(1, ncols ))[0],moduleNames)
+        correctModuleSize(np.loadtxt(path, delimiter=',', skiprows=1, dtype="str", usecols=range(1, ncols ))[0],moduleNames, que)
     
-
+    
     try:
         studentGrades = np.loadtxt(path, delimiter=',', skiprows=2, dtype="int", usecols=[ncols])
+        print studentGrades
     finally:
-        correctStudentGrades(np.loadtxt(path, delimiter=',', skiprows=2, dtype="str", usecols=[ncols]),studentNames)
+        correctStudentGrades(np.loadtxt(path, delimiter=',', skiprows=2, dtype="str", usecols=[ncols]),studentNames, que)
+    
         
     try:
-        wishList      = np.loadtxt(path, delimiter=',', skiprows=2, dtype="int", usecols=range(1, ncols ))
+        wishList = np.loadtxt(path, delimiter=',', skiprows=2, dtype="int", usecols=range(1, ncols ))
     finally:
-        correctWishList(np.loadtxt(path, delimiter=',', skiprows=2, dtype="str", usecols=range(1, ncols )),studentNames)
+        correctWishList(np.loadtxt(path, delimiter=',', skiprows=2, dtype="str", usecols=range(1, ncols )),studentNames, que)
+
 
     return [moduleNames, moduleSize, studentNames, studentGrades, wishList]
 
-def initialAssignmentMatrix(wishList, moduleSize):#creates an initial assignment
+def initialAssignmentMatrix(wishList, moduleSize, que=None):#creates an initial assignment
     (n, m) = np.shape(wishList)
     
     while True:
@@ -52,7 +55,7 @@ def initialAssignmentMatrix(wishList, moduleSize):#creates an initial assignment
 
 class Initialize():
     
-    def __init__(self, gui=None):
+    def __init__(self, gui=None, que=None, path = None):
         #Constants that describe the optimization process---------------------------
         self.sdtFactor       = 0        #Factor how strong the standard deviation should influence the score
         self.outerCycleCount = 1000     #Count of permutations
@@ -61,17 +64,24 @@ class Initialize():
         self.permutationStrength = .5   #Factor of the exponentialdistribution
         
         #path to the initial student table, has to be done via GUI
-        path = r'ScoreTable_test.csv'
-        #print os.listdir(os.getcwd())
-        self.ospath = os.path.abspath(path)
-        scoreTable = read_initialTable(self.ospath)
+        if path:
+            pathToTable = path
+            pathToTable = r'ScoreTable_test.csv'
+            correctPath(pathToTable, que)
+        else:
+            pathToTable = r'ScoreTable_test.csv'
+            correctPath(pathToTable, que)
+            
+        self.ospath = os.path.abspath(pathToTable)    
+        scoreTable = read_initialTable(self.ospath, que)
+
         
         #list of modules, their maximum size, students, their grades and the wishmatrix-
         self.moduleNames    = scoreTable[0]
         self.moduleSize     = scoreTable[1]
         self.studentNames   = scoreTable[2]
         self.studentGrades  = scoreTable[3]
-        wishList       = scoreTable[4]
+        wishList            = scoreTable[4]
         
         #TEST---------------------------------
         wishList = randomWishList()#-------
@@ -94,7 +104,7 @@ class Initialize():
             self.plot = Plot()
         
         #creation of the initial (random) assignment------------------------------------
-        self.assignmentMatrix = initialAssignmentMatrix(wishList, self.moduleSize)
+        self.assignmentMatrix = initialAssignmentMatrix(wishList, self.moduleSize, que)
         
         
     def __str__(self):

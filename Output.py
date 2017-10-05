@@ -33,7 +33,7 @@ class Plot:
         if self.gui:
             self.canvas.draw()
         else:
-            plt.pause(0.1)
+            plt.pause(0.001)
 
     def DrawHeat(self, assignmentMatrix,rawWishList):
         prioOrderedMatrix = np.empty((rawWishList.shape))
@@ -49,7 +49,8 @@ class Plot:
 
 
     def Show(self):
-        plt.show()        
+        if not self.gui:
+            plt.show()        
         
     def Save(self):
         self.fig.savefig('FinalPlot.png')

@@ -17,13 +17,16 @@ def statusConsole(text):
 		text.config(state=NORMAL)
 		
 		if "%" in str(data):
-			text.insert(END,'%s\n' % str(data), "highlight")
+			text.insert(END,'%s\n' % str(data), "finished")
+		elif "ERROR" in str(data):
+			text.insert(END,'%s\n' % str(data), "error")
 		else:
 			text.insert(END,'%s\n' % str(data))
 			
 		text.see(END)
 		text.config(state=DISABLED)
-		text.tag_configure("highlight", foreground="green")
+		text.tag_configure("finished", foreground="green")
+		text.tag_configure("error", foreground="red")
 	text.after(250, lambda: statusConsole(text))
 
 def chooseButtonCallback(path):
@@ -38,7 +41,7 @@ def browseButtonCallback():
 	tmpFilePath.insert(0,filename)
 
 def goButtonCallBack(path, root):
-	thread.start_new_thread(Main.main, (dataQueue, root))
+	thread.start_new_thread(Main.main, (dataQueue, root, path))
 
 
 #Some preparation---------------------------------------------------------------
