@@ -1,4 +1,4 @@
-import thread, Queue, time, random, Main
+import thread, Queue, Main
 import matplotlib
 import matplotlib.pyplot as plt
 import numpy as np
@@ -37,24 +37,20 @@ def browseButtonCallback():
 	tmpFilePath.delete(0,END)
 	tmpFilePath.insert(0,filename)
 
-def goButtonCallBack(path):
-	thread.start_new_thread(Main.main, (1,dataQueue)) 
-	print path
-	for i in range(10):
-		y = np.random.random()
-		woop(i,y)
-		canvas.show()
+def goButtonCallBack(path, root):
+	thread.start_new_thread(Main.main, (dataQueue, root))
 
-#Some preparation--------------------------------------------
+
+#Some preparation---------------------------------------------------------------
 matplotlib.use("TkAgg")
-#------------------------------------------------------------
+#-------------------------------------------------------------------------------
 
-#Font constants----------------------------------------------
+#Font constants-----------------------------------------------------------------
 font = "Comic Sans MS"
 bg = "gray"
-#------------------------------------------------------------
+#-------------------------------------------------------------------------------
 
-#Defining the GUI and window name and label------------------
+#Defining the GUI and window name and label-------------------------------------
 top = Tk()
 top.geometry('{}x{}'.format(1000,500))
 top.configure(background=bg)
@@ -62,9 +58,9 @@ top.title("MAMA")
 
 label = Label(top, text="(M)LS (A)dvanced (M)odule (A)ssigner", bg=bg, font=(font, 16))
 label.place(x=10, y=10)
-#-----------------------------------------------------------
+#-------------------------------------------------------------------------------
 
-#Buttons and Entries for the source File--------------------
+#Buttons and Entries for the source File----------------------------------------
 tmpFilePath = Entry(top, width = 50)
 tmpFilePath.focus_set()
 tmpFilePath.place(x=10, y=90)
@@ -80,34 +76,26 @@ BrowseButton.place(x=10, y=130)
 
 ChooseButton = Button(top, text = "Choose", width=10, command=lambda: chooseButtonCallback(tmpFilePath), activebackground="blue")
 ChooseButton.place(x=140, y=130)
-#----------------------------------------------------------
+#-------------------------------------------------------------------------------
 
-#GO button and output--------------------------------------
-GoButton = Button(top, text = "Start Optimization", width = 15, command = lambda: goButtonCallBack(finalFilePath.get()), activebackground="green")
+#GO button and output-----------------------------------------------------------
+GoButton = Button(top, text = "Start Optimization", width = 15, command = lambda: goButtonCallBack(finalFilePath.get(), top), activebackground="green")
 GoButton.place(x=270, y=130)
 
-#Text Widget for output from console (gets stored in queue)
+#Text Widget for output from console (gets stored in queue)---------------------
 dataQueue = Queue.Queue()
 console = Text(top, width=57, height=17)
 console.place(x=10, y=220)
 statusConsole(console)
-#scroller = Scrollbar(top, command=console.yview)
-#scroller.place(x=40,y=50)
-#---------------------------------------------------------
+#-------------------------------------------------------------------------------
 
-#Create figure for visual output--------------------------
+#Create figure for visual output------------------------------------------------
 f = Figure(figsize=(6,5), dpi=100)
 f.set_facecolor(bg)
 a = f.add_subplot(221)#, axisbg=bg)
 b = f.add_subplot(223)
 c = f.add_subplot(122)
-plt.ion()
 
-def woop(i,y):
-    a.scatter(i, y)
-    b.scatter(i, y)
-    c.scatter(i, y)
-    plt.pause(0.05)
 
 canvas = FigureCanvasTkAgg(f, master=top)
 canvas.get_tk_widget().place(x=420, y=0)#side=BOTTOM, fill=BOTH, expand=True)

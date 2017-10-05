@@ -52,7 +52,7 @@ def initialAssignmentMatrix(wishList, moduleSize):#creates an initial assignment
 
 class Initialize():
     
-    def __init__(self):
+    def __init__(self, gui=None):
         #Constants that describe the optimization process---------------------------
         self.sdtFactor       = 0        #Factor how strong the standard deviation should influence the score
         self.outerCycleCount = 1000     #Count of permutations
@@ -88,7 +88,10 @@ class Initialize():
         self.worstScore = len(self.studentNames)*(self.func(15) + self.func(14) + self.func(13))
         
         #Plot--------------------------------
-        self.plot = Plot()
+        if gui:
+            self.plot = Plot(gui)
+        else:
+            self.plot = Plot()
         
         #creation of the initial (random) assignment------------------------------------
         self.assignmentMatrix = initialAssignmentMatrix(wishList, self.moduleSize)

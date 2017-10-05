@@ -76,7 +76,7 @@ def modulPrio(auswahl, wishList, studentGrades):#estimates if one students get i
             #does not matter which assignment to take
             return True
 
-def RunOptimizer(values, ID=None, que=None):#Main running routine
+def RunOptimizer(values, que=None):#Main running routine
     assignmentMatrix = values.assignmentMatrix
     innerCycleCount  = values.innerCycleCount
     outerCycleCount  = values.outerCycleCount

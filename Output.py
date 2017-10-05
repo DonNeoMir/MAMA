@@ -1,13 +1,14 @@
 import matplotlib.pyplot as plt
+from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 import os
 import ntpath
 import numpy as np
 
 class Plot:
     
-    def __init__(self):
-        plt.ion()
-        self.fig = plt.figure()#, (self.axarr, self.axarr1) = plt.subplots()
+    def __init__(self, gui=None):
+        self.fig = plt.figure(figsize=(6,5))
+        self.fig.set_facecolor("grey")
         self.axarr1 = self.fig.add_subplot(221)
         self.axarr2 = self.fig.add_subplot(223)
         self.axarr3 = self.fig.add_subplot(122)
@@ -19,12 +20,20 @@ class Plot:
         self.axarr2.set_ylabel("Standard Deviation")
         self.axarr2.axhline(y=0, linewidth=1, color='r')
         
+        self.gui = gui
+        
+        if self.gui:
+            self.canvas = FigureCanvasTkAgg(self.fig, master=self.gui)
+            self.canvas.get_tk_widget().place(x=420, y=0)
+
+        
     def Draw(self,step, score, std):
-        self.axarr1.scatter(step, score,  color="blue")
-        #self.axarr[0].annotate('Final score of '+ str(scoreList[-1]), xy=(0.9, 0.9), xycoords='axes fraction', fontsize=16, horizontalalignment='right', verticalalignment='top')   
-        self.axarr2.scatter(step, std, color="green")
-        #self.axarr[1].annotate('Final StadDev of '+str(stdList[-1])[:4], xy=(0.9, 0.9), xycoords='axes fraction', fontsize=16, horizontalalignment='right',verticalalignment='top')
-        plt.pause(0.1)
+        self.axarr1.scatter(step, score, color="green") 
+        self.axarr2.scatter(step, std  , color="blue")
+        if self.gui:
+            self.canvas.draw()
+        else:
+            plt.pause(0.1)
 
     def DrawHeat(self, assignmentMatrix,rawWishList):
         prioOrderedMatrix = np.empty((rawWishList.shape))
@@ -37,10 +46,9 @@ class Plot:
         prioOrderedMatrix = prioOrderedMatrix.astype(int)
 
         self.axarr3.imshow(prioOrderedMatrix,cmap="RdYlGn", interpolation='nearest')
-        plt.pause(0.1)
+
 
     def Show(self):
-        plt.ioff()
         plt.show()        
         
     def Save(self):
@@ -66,7 +74,7 @@ def SaveFinalTable(values):
             os.chdir(folderName)
             break
         except:
-            "This error should have never happend!"
+            "This error should have never happened!"
 
     f = open('FinalAssigment.csv', 'w')
     
