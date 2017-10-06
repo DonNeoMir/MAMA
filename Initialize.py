@@ -20,7 +20,6 @@ def read_initialTable(path, que=None):#Function to read the initial matrix
     
     try:
         studentGrades = np.loadtxt(path, delimiter=',', skiprows=2, dtype="int", usecols=[ncols])
-        print studentGrades
     finally:
         correctStudentGrades(np.loadtxt(path, delimiter=',', skiprows=2, dtype="str", usecols=[ncols]),studentNames, que)
     
@@ -57,16 +56,16 @@ class Initialize():
     
     def __init__(self, gui=None, que=None, path = None):
         #Constants that describe the optimization process---------------------------
-        self.sdtFactor       = 0        #Factor how strong the standard deviation should influence the score
-        self.outerCycleCount = 1000     #Count of permutations
-        self.innerCycleCount = 100       #Count of permutation to find the next best permutation
-        self.breakThreshold  = 100     #Count of how often the outer cycle should run without a change in score.
-        self.permutationStrength = .5   #Factor of the exponentialdistribution
+        self.sdtFactor           = 0        #Factor how strong the standard deviation should influence the score
+        self.outerCycleCount     = 100     #Count of permutations
+        self.innerCycleCount     = 100      #Count of permutation to find the next best permutation
+        self.breakThreshold      = 100      #Count of how often the outer cycle should run without a change in score.
+        self.permutationStrength = .5       #Factor of the exponentialdistribution
         
         #path to the initial student table, has to be done via GUI
         if path:
             pathToTable = path
-            pathToTable = r'ScoreTable_test.csv'
+            #pathToTable = r'ScoreTable_test.csv'
             correctPath(pathToTable, que)
         else:
             pathToTable = r'ScoreTable_test.csv'
@@ -82,12 +81,12 @@ class Initialize():
         self.studentNames   = scoreTable[2]
         self.studentGrades  = scoreTable[3]
         wishList            = scoreTable[4]
-        
+
         #TEST---------------------------------
-        wishList = randomWishList()#-------
-        self.moduleSize = randomModuleSize()#---
+        #wishList = randomWishList()#-------
+        #self.moduleSize = randomModuleSize()#---
         #-------------------------------------
-        
+
         #Weighting of the wishList with a different function (best and worst get more weight)
         self.func = np.vectorize(lambda x: (5. - x)/(x*(x-16.)))
         self.rawWishList = wishList

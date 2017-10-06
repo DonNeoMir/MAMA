@@ -141,7 +141,7 @@ def RunOptimizer(values, que=None):#Main running routine
             plot.Draw(step, (newScore[0] - worstScore) /(optScore - worstScore) * 100, bestScore[1])
             plot.DrawHeat(assignmentMatrix,rawWishList)
     
-    plot.Show()
+    #plot.Show()
     bestRelScore = str(round( (newScore[0] - worstScore) /(optScore - worstScore) * 100,2))
     if que:
         que.put(bestRelScore +"% of the optimal Score has been reached.")

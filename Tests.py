@@ -59,7 +59,6 @@ def correctWishList(wishList,studentNames, que=None):
     prioSum = sum(range(wishList.shape[1]+1))
 
     summo = np.sum(wishList.astype(np.int), axis=1)
-    print wishList
     for i in range(len(wishList.astype(np.int))):
         if range(1,wishList.shape[1] + 1) != sorted(wishList.astype(np.int)[i]):
             if que:
@@ -67,9 +66,8 @@ def correctWishList(wishList,studentNames, que=None):
                 que.put("ERROR: The Sum of his priorities is >>" + str(summo[i]) + "<< instead of >>" + str(prioSum) + "<< which would be expected for >>" + str(wishList.shape[1]) + "<< modules")
             else:
                 print "At least Student >>",studentNames[i],"<< has not used all priorities."
-                print "The Sum of his priorities is >>",i,"<< instead of >>",prioSum,"<< which would be expected for >>",wishList.shape[1],"<< modules"
+                print "The Sum of his priorities is >>",summo[i],"<< instead of >>",prioSum,"<< which would be expected for >>",wishList.shape[1],"<< modules"
             sys.exit() 
-
 #-------------------------------------------------------------------------------
 
 #creation of random testcases---------------------------------------------------
@@ -85,7 +83,7 @@ def randomWishList():
     return np.asarray(np.matrix(Listmatrix))
 
 def randomModuleSize():
-    return np.array(randrange(7,15) for _ in range(15))
+    return np.array([randrange(7,15) for _ in range(15)])
 #-------------------------------------------------------------------------------
 
 #checking if the file exists----------------------------------------------------

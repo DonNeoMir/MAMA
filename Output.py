@@ -2,6 +2,8 @@ import matplotlib.pyplot as plt
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 import os
 import ntpath
+from shutil import copyfile
+from filecmp import cmp
 import numpy as np
 
 class Plot:
@@ -19,6 +21,9 @@ class Plot:
         self.axarr2.set_xlabel("Tries of Permutations")
         self.axarr2.set_ylabel("Standard Deviation")
         self.axarr2.axhline(y=0, linewidth=1, color='r')
+        
+        self.axarr3.set_xlabel("Student priorities")
+        self.axarr3.set_ylabel("Students")
         
         self.gui = gui
         
@@ -57,15 +62,16 @@ class Plot:
         return
     
     
-def SaveFinalTable(values):
+def SaveFinalTable(values, que=None):
     assignmentMatrix = values.assignmentMatrix
     rawWishList      = values.rawWishList
     moduleNames      = values.moduleNames
     studentNames     = values.studentNames
+    studentGrades    = values.studentGrades
+    moduleSize       = values.moduleSize
     path             = values.ospath
     
     assignmentMatrix *= rawWishList
-
     os.chdir(os.path.dirname(path))
     inputName = ntpath.basename(path).split(".")[0]
     for n in range(1,100):
@@ -77,11 +83,28 @@ def SaveFinalTable(values):
         except:
             "This error should have never happened!"
 
-    f = open('FinalAssigment.csv', 'w')
+    copyfile(path, "InitialData_Original.csv")
+
+    fileWork = open("InitialData_MAMA.csv", "w")
+    fileWork.write("," + ",".join(moduleNames) + ",\n")
+    fileWork.write("," + ",".join(map(str,moduleSize)) + ",\n")
+   
     
-    f.write("," + ",".join(moduleNames) + "\n")
-
+    fileFinal = open("FinalAssigment.csv", "w")
+    fileFinal.write("," + ",".join(moduleNames) + "\n")
+    
     for index,name in enumerate(studentNames):
-        f.write(name + "," + ",".join(map(str,assignmentMatrix[index])) + "\n")
+        fileWork.write(name + "," + ",".join(map(str,rawWishList[index])) + "," + str(studentGrades[index]) + "\n")        
+        fileFinal.write(name + "," + ",".join(map(str,assignmentMatrix[index])) + "\n")
 
-    f.close()
+    fileWork.close()
+    fileFinal.close()
+    cmpFile = cmp("InitialData_MAMA.csv","InitialData_Original.csv" )
+
+    if not cmpFile:
+        if que:
+            que.put("ERROR: Although the optimization finished, it seems that the data file was not read properly.")
+            que.put("ERROR: Please compare >>InitialData_MAMA.csv<< with >>InitialData_Original_csv.<<")
+        else:
+            print "Although the optimization finished, it seems that the data file was not read properly."
+            print "Please compare >>InitialData_MAMA.csv<< with >>InitialData_Original_csv.<<"           

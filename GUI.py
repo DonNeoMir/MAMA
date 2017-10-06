@@ -1,7 +1,5 @@
 import thread, Queue, Main
 import matplotlib
-import matplotlib.pyplot as plt
-import numpy as np
 
 from Tkinter import *
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
@@ -41,6 +39,9 @@ def browseButtonCallback():
 	tmpFilePath.insert(0,filename)
 
 def goButtonCallBack(path, root):
+	console.config(state=NORMAL)
+	console.delete(1.0,END)
+	console.config(state=DISABLED)
 	thread.start_new_thread(Main.main, (dataQueue, root, path))
 
 
@@ -99,10 +100,8 @@ a = f.add_subplot(221)#, axisbg=bg)
 b = f.add_subplot(223)
 c = f.add_subplot(122)
 
-
 canvas = FigureCanvasTkAgg(f, master=top)
 canvas.get_tk_widget().place(x=420, y=0)#side=BOTTOM, fill=BOTH, expand=True)
 canvas.show()
-
 
 top.mainloop()

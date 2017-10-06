@@ -9,27 +9,25 @@ def main(que=None, guiroot=None, path=None):
     #Initializing---------------------------------------------------------------
     #two variant, GUI with queue, or command line start
     if que:
-        que.put("---------------------------------------------------------")
         que.put("Start of the program")
         que.put("Initializing in progress...")
         values = Initialize(guiroot, que, path)
         que.put("Initializing completed!")
-        #finding the best assignment--------------------------------------------
+
         RunOptimizer(values, que)
-        
+        SaveFinalTable(values, que)
+        values.plot.Save()
+        que.put("Program finished!")
     else:
         print "Start of the program"
         print "Initializing in progress..."
         values = Initialize()
         print "Initializing completed!"    
-                 
-        #finding the best assignment--------------------------------------------
+
         RunOptimizer(values)
-    
-    #OUTPUT---------------------------------------------------------------------
-    SaveFinalTable(values)
-    values.plot.Save()
-#-------------------------------------------------------------------------------
+        SaveFinalTable(values)
+        values.plot.Save()
+        print "Program finished!"
 
 if __name__ == '__main__':
     main()
