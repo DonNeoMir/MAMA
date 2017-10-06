@@ -19,11 +19,9 @@ Soon this part will be awesome as well
 ## TODO
 * ordentliches README schreieben
 * ein ordenliches beispiel machen (Christoph)
-* stichproben test schreiben (Christoph)
-* in mehrere Files aufteilen
 * testen ob das auch mit anderen anzahlen von modulen und studenten laeuft
 * testen ob das auch mit leerzeichen im studenten oder modulnamen laeuft
-* eine neue tabelle kreieren die eingelesen wurde und die mit der uhrsprunglichen diffen
+* eine neue tabelle kreieren die eingelesen wurde und die mit der urspruenglichen diffen
 
 ## Authors
 
