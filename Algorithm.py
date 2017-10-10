@@ -95,7 +95,7 @@ def RunOptimizer(values, que=None):#Main running routine
     counter          = 0
     maxIterations    = str(innerCycleCount * outerCycleCount)
 
-    for step in range(outerCycleCount):#outer-loop is the actual step-count 
+    for step in range(outerCycleCount + 1):#outer-loop is the actual step-count 
         bestScore = evaluateScore(assignmentMatrix, wishList,  sdtFactor)
         tmpScore = bestScore
         for _ in range(innerCycleCount):#inner-loop determines locally the best step
