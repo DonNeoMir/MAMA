@@ -28,6 +28,6 @@ def main(que=None, guiroot=None, path=None):
         SaveFinalTable(values)
         values.plot.Save()
         print "Program finished!"
-
+    return
 if __name__ == '__main__':
     main()
