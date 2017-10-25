@@ -17,12 +17,11 @@ def read_initialTable(path, que=None):#Function to read the initial matrix
     finally:
         correctModuleSize(np.loadtxt(path, delimiter=',', skiprows=1, dtype="str", usecols=range(1, ncols ))[0],moduleNames, que)
     
-    
+
     try:
         studentGrades = np.loadtxt(path, delimiter=',', skiprows=2, dtype="int", usecols=[ncols])
     finally:
         correctStudentGrades(np.loadtxt(path, delimiter=',', skiprows=2, dtype="str", usecols=[ncols]),studentNames, que)
-    
         
     try:
         wishList = np.loadtxt(path, delimiter=',', skiprows=2, dtype="int", usecols=range(1, ncols ))
@@ -34,10 +33,10 @@ def read_initialTable(path, que=None):#Function to read the initial matrix
 
 def initialAssignmentMatrix(wishList, moduleSize, que=None):#creates an initial assignment
     (n, m) = np.shape(wishList)
-    
-    while True:
-        assignmentMatrix = np.zeros((n,m), dtype=np.int)
-        for studNr in range(n):
+    assignmentMatrix = np.zeros((n,m), dtype=np.int)
+        
+    for studNr in range(n):
+        while True:
             initValues = []
             for _ in range(3):
                 while len(initValues) < 3:
@@ -47,9 +46,11 @@ def initialAssignmentMatrix(wishList, moduleSize, que=None):#creates an initial 
             for value in initValues:
                 assignmentMatrix[studNr][value] = 1
 
-        if moduleOccupancy(assignmentMatrix, moduleSize):
-            break
-
+            if moduleOccupancy(assignmentMatrix, moduleSize):
+                break
+            else:
+                for value in initValues:
+                    assignmentMatrix[studNr][value] = 0               
     return assignmentMatrix
 
 class Initialize():
@@ -68,7 +69,9 @@ class Initialize():
             #pathToTable = r'ScoreTable_test.csv'
             correctPath(pathToTable, que)
         else:
-            pathToTable = r'ScoreTable_test.csv'
+            pathToTable = r'MMLS Enrollment 2017_wish list for program check.csv'
+            pathToTable = r"ScoreTable_test.csv"
+            pathToTable = r"MMLSHandCheck.csv"
             correctPath(pathToTable, que)
             
         self.ospath = os.path.abspath(pathToTable)    
@@ -91,20 +94,20 @@ class Initialize():
         self.func = np.vectorize(lambda x: (5. - x)/(x*(x-16.)))
         self.rawWishList = wishList
         self.wishList = self.func(wishList)
-        
+
         #best and worst score possible
         self.optScore   = len(self.studentNames)*( self.func(1) +  self.func(2) +  self.func(3))
         self.worstScore = len(self.studentNames)*(self.func(15) + self.func(14) + self.func(13))
-        
+
         #Plot--------------------------------
         if gui:
             self.plot = Plot(gui)
         else:
             self.plot = Plot()
-        
+        print "BLUB"
         #creation of the initial (random) assignment------------------------------------
         self.assignmentMatrix = initialAssignmentMatrix(wishList, self.moduleSize, que)
-        
+        print "BLUB"
         
     def __str__(self):
         out = "\n"
