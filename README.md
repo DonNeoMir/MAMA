@@ -4,7 +4,7 @@
 (M)LS (A)dvanced (M)odule (A)ssigner
 
 ## Usage
-See I told you, its already more awesome
+See I told you, its already more awesome(r)
 ### Creating the Students Wishlist
 The Wishlist includes identifications of the Students (Names, Matrikel-Nr. or something like it), identifications of the advanced modules (Names, Number or something like it), the max. number of students which can be assigned to the particular module and the grade which is used to priorities the students. These informations have to be saved in a comma separated table formatted as seen in the *example PDF* and the *example csv*. The following points have to be considered while creating the *.csv* file (Create in a spreadsheet program like EXCLE and then save/export as csv (Comma separated values)).
 * Blue Cells (see *example PDF*) must be empty
@@ -18,10 +18,9 @@ Soon this part will be awesome as well
 
 ## TODO
 * ordentliches README schreieben
-* ein ordenliches beispiel machen (Christoph)
-* testen ob das auch mit anderen anzahlen von modulen und studenten laeuft
-* testen ob das auch mit leerzeichen im studenten oder modulnamen laeuft
-* eine neue tabelle kreieren die eingelesen wurde und die mit der urspruenglichen diffen
+* GUI unter Windows zum laufen bringen
+* als EXE im Windows zum Laufen kriegen
+* Score Function and Anzahl Module anpassen
 
 ## Authors
 
