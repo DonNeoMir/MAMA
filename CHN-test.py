@@ -22,6 +22,11 @@ def DrawHeat(assignmentMatrix,rawWishList):
 
     ylabels = np.arange(1,41)
     ylocs = np.arange(len(ylabels))
+    
+    plt.xticks(rotation=90, fontsize=8)
+    plt.yticks(rotation=0, fontsize=8)
+    plt.xlabel("Modul Priority")
+    plt.ylabel("Students ID")
 
     ax.xaxis.set_ticks(xlocs + 0.5, minor=True)
     ax.xaxis.set(ticks=xlocs, ticklabels=xlabels)
