@@ -3,8 +3,9 @@ import sys
 from random import shuffle, randrange
 
 
-#checks if the assignment violates moduleSize constraints-----------------------
+#checks if the assignment violates moduleSize constraints (TRUE)----------------
 def moduleOccupancy(assignment, moduleSize):
+    #print moduleSize, assignment.sum(axis=0)
     return not len(np.where(moduleSize < assignment.sum(axis=0))[0]) > 0
 #-------------------------------------------------------------------------------
 
@@ -67,7 +68,7 @@ def correctWishList(wishList,studentNames, que=None):
             else:
                 print "At least Student >>",studentNames[i],"<< has not used all priorities."
                 print "The Sum of his priorities is >>",summo[i],"<< instead of >>",prioSum,"<< which would be expected for >>",wishList.shape[1],"<< modules"
-            sys.exit() 
+            #sys.exit() 
 #-------------------------------------------------------------------------------
 
 #creation of random testcases---------------------------------------------------

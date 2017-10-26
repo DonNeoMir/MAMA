@@ -7,9 +7,11 @@ def evaluateScore(assignmentMatrix, wishList,  fac):#calculates the current sore
     produktMatrix = assignmentMatrix*wishList
     return [np.sum(produktMatrix),np.std(produktMatrix.sum(axis=1))]
 
-def innerPermutation(assignmentMatrix, moduleSize):#one random student swaps 
-
-    while True:
+def innerPermutation(assignmentMatrix, moduleSize):#one random student swaps
+    initialData = np.copy(assignmentMatrix) 
+    i = 0
+    while i<100:
+        i+=1
         stud    = randrange(np.shape(assignmentMatrix)[0])
         module0 = choice(np.where(assignmentMatrix[stud] == 0)[0])
         module1 = choice(np.where(assignmentMatrix[stud] == 1)[0])
@@ -17,6 +19,7 @@ def innerPermutation(assignmentMatrix, moduleSize):#one random student swaps
         assignmentMatrix[stud][module0], assignmentMatrix[stud][module1] = assignmentMatrix[stud][module1], assignmentMatrix[stud][module0]
         if moduleOccupancy(assignmentMatrix, moduleSize):
             return [assignmentMatrix, False]#Here is maybe a breaking criteria missing ....
+    return [initialData, False]
 
 def outerPermutation(assignmentMatrix):#two random students swap their modules
     studA   = randrange(np.shape(assignmentMatrix)[0])
@@ -95,7 +98,7 @@ def RunOptimizer(values, que=None):#Main running routine
     counter          = 0
     maxIterations    = str(innerCycleCount * outerCycleCount)
 
-    for step in range(outerCycleCount + 1):#outer-loop is the actual step-count 
+    for step in range(outerCycleCount + 1):#outer-loop is the actual step-count
         bestScore = evaluateScore(assignmentMatrix, wishList,  sdtFactor)
         tmpScore = bestScore
         for _ in range(innerCycleCount):#inner-loop determines locally the best step
