@@ -4,6 +4,7 @@
 from Initialize import Initialize
 from Algorithm import RunOptimizer
 from Output import SaveFinalTable
+import FileDialog ## For Pyinstaller
 
 def main(que=None, guiroot=None, path=None):    
     #Initializing---------------------------------------------------------------
