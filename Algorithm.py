@@ -92,6 +92,7 @@ def RunOptimizer(values, que=None):#Main running routine
     rawWishList      = values.rawWishList
     optScore         = values.optScore
     worstScore       = values.worstScore
+    studentNames        = values.studentNames
  
     scoreList        = []
     stdList          = []
@@ -142,7 +143,7 @@ def RunOptimizer(values, que=None):#Main running routine
             else:
                 print str(step * innerCycleCount).ljust(len(maxIterations)), "Permutations of", maxIterations, "done"
             plot.Draw(step, (newScore[0] - worstScore) /(optScore - worstScore) * 100, bestScore[1])
-            plot.DrawHeat(assignmentMatrix,rawWishList)
+            plot.DrawHeat(assignmentMatrix,rawWishList,studentNames)
     
     #plot.Show()
     bestRelScore = str(round( (newScore[0] - worstScore) /(optScore - worstScore) * 100,2))

@@ -40,7 +40,7 @@ class Plot:
         else:
             plt.pause(0.001)
 
-    def DrawHeat(self, assignmentMatrix,rawWishList):
+    def DrawHeat(self, assignmentMatrix,rawWishList,studentNames):
         prioOrderedMatrix = np.empty((rawWishList.shape))
         
         for stud in range (0,rawWishList.shape[0]):
@@ -50,8 +50,31 @@ class Plot:
                         prioOrderedMatrix[stud][prio-1] = assignmentMatrix[stud][index]
         prioOrderedMatrix = prioOrderedMatrix.astype(int)
 
+        #fig, ax = plt.subplots()
         self.axarr3.imshow(prioOrderedMatrix,cmap="RdYlGn", interpolation='nearest')
 
+
+        xlabels = np.arange(1,rawWishList.shape[1]+1)
+        xlocs = np.arange(len(xlabels))
+        
+
+
+        ylabels = studentNames
+        ylocs = np.arange(len(np.arange(0,rawWishList.shape[0])))
+        
+        plt.xticks(rotation=90, fontsize=8)
+        plt.yticks(rotation=0, fontsize=8)
+        plt.xlabel("Modul Priority")
+        plt.ylabel("Students ID")
+        
+        self.axarr3.xaxis.set_ticks(xlocs + 0.5, minor=True)
+        self.axarr3.xaxis.set(ticks=xlocs, ticklabels=xlabels)
+        self.axarr3.yaxis.set_ticks(ylocs + 0.5, minor=True)
+        self.axarr3.yaxis.set(ticks=ylocs, ticklabels=ylabels)
+        
+
+        # Turn on the grid for the minor ticks
+        self.axarr3.grid(True, which='minor')
 
     def Show(self):
         if not self.gui:
