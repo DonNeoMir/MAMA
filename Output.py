@@ -56,15 +56,13 @@ class Plot:
 
         xlabels = np.arange(1,rawWishList.shape[1]+1)
         xlocs = np.arange(len(xlabels))
-        
-
 
         ylabels = studentNames
-        ylocs = np.arange(len(np.arange(0,rawWishList.shape[0])))
+        ylocs = np.arange(len(ylabels))
         
         plt.xticks(rotation=90, fontsize=8)
         plt.yticks(rotation=0, fontsize=8)
-        plt.xlabel("Modul Priority")
+        plt.xlabel("Module Priority")
         plt.ylabel("Students ID")
         
         self.axarr3.xaxis.set_ticks(xlocs + 0.5, minor=True)

@@ -91,7 +91,7 @@ class Initialize():
         #-------------------------------------
 
         #Weighting of the wishList with a different function (best and worst get more weight)
-        self.func = np.vectorize(lambda x: (5. - x)/(x*(x-16.)))
+        self.func = np.vectorize(lambda x: (5. - x)/(x*(x-float(len(self.moduleNames) + 1))))
         self.rawWishList = wishList
         self.wishList = self.func(wishList)
 
