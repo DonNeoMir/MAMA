@@ -1,5 +1,6 @@
 import thread, Queue, Main
 import matplotlib
+import threading
 
 from Tkinter import *
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
@@ -18,6 +19,8 @@ def statusConsole(text):
 			text.insert(END,'%s\n' % str(data), "finished")
 		elif "ERROR" in str(data):
 			text.insert(END,'%s\n' % str(data), "error")
+		elif "WARNING" in str(data):
+			text.insert(END,'%s\n' % str(data), "warning")
 		else:
 			text.insert(END,'%s\n' % str(data))
 			
@@ -25,6 +28,7 @@ def statusConsole(text):
 		text.config(state=DISABLED)
 		text.tag_configure("finished", foreground="green")
 		text.tag_configure("error", foreground="red")
+		text.tag_configure("warning", foreground="orange")
 	text.after(250, lambda: statusConsole(text))
 
 def chooseButtonCallback(path):
@@ -43,7 +47,7 @@ def goButtonCallBack(path, root):
 	console.delete(1.0,END)
 	console.config(state=DISABLED)
 	thread.start_new_thread(Main.main, (dataQueue, root, path))
-
+	#threading.Thread(target=Main.main, args=(dataQueue, root, path)).start()
 
 #Some preparation---------------------------------------------------------------
 matplotlib.use("TkAgg")
@@ -51,7 +55,7 @@ matplotlib.use("TkAgg")
 
 #Font constants-----------------------------------------------------------------
 font = "Comic Sans MS"
-bg = "#7D7D7D"
+bg = "#ADADAD"
 #-------------------------------------------------------------------------------
 
 #Defining the GUI and window name and label-------------------------------------

@@ -26,3 +26,7 @@ Soon this part will be awesome as well
 
 * **Christoph Neu** - *Initial work* - [kEks](https://github.com/keksundso)
 * **Richard Henze** - *Made it proper* - [DonNeoMir](https://github.com/DonNeoMir)
+
+## Requirements
+Table MUST be in csv format with "," as seperators
+Its read automatically, if the wishlist is not proper, its converted AUTOMATICALLY!!11elf

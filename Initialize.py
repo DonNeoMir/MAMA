@@ -7,28 +7,16 @@ from Output import Plot
 def read_initialTable(path, que=None):#Function to read the initial matrix
 
     with open(path) as f:
-        ncols = len(f.readline().split(','))-1
+        ncols = len(f.readline().split(","))
 
-    moduleNames   = np.loadtxt(path, delimiter=',', skiprows=0, dtype="str", usecols=range(1, ncols ))[0]
-    studentNames  = np.loadtxt(path, delimiter=',', skiprows=2, dtype="str", usecols=range(1))
-
+    moduleNames   = np.loadtxt(path, delimiter=',', skiprows=0, dtype="str", usecols=range(1, ncols - 1))[0]
+    studentNames  = np.loadtxt(path, delimiter=',', skiprows=2, dtype="str", usecols=0)
+    moduleSize    = correctModuleSize   (np.genfromtxt(path, delimiter=',', skip_header=1, dtype="str", usecols=range(1,ncols - 1))[0],moduleNames, que)
+    wishList      = correctWishList     (np.genfromtxt(path, delimiter=',', skip_header=2, dtype="str", usecols=range(1, ncols - 1 )),studentNames, que)
     try:
-        moduleSize = np.loadtxt(path, delimiter=',', skiprows=1, dtype="int", usecols=range(1, ncols ))[0]
-    finally:
-        correctModuleSize(np.loadtxt(path, delimiter=',', skiprows=1, dtype="str", usecols=range(1, ncols ))[0],moduleNames, que)
-    
-
-    try:
-        studentGrades = np.loadtxt(path, delimiter=',', skiprows=2, dtype="int", usecols=[ncols])
-    finally:
-        correctStudentGrades(np.loadtxt(path, delimiter=',', skiprows=2, dtype="str", usecols=[ncols]),studentNames, que)
-        
-    try:
-        wishList = np.loadtxt(path, delimiter=',', skiprows=2, dtype="int", usecols=range(1, ncols ))
-    finally:
-        correctWishList(np.loadtxt(path, delimiter=',', skiprows=2, dtype="str", usecols=range(1, ncols )),studentNames, que)
-
-
+        studentGrades = correctStudentGrades(np.genfromtxt(path, delimiter=',', skip_header=2, dtype="str", usecols=[ncols - 1]),studentNames, que)
+    except:
+        studentGrades = np.array([0]*len(studentNames))
     return [moduleNames, moduleSize, studentNames, studentGrades, wishList]
 
 def initialAssignmentMatrix(wishList, moduleSize, que=None):#creates an initial assignment
@@ -60,7 +48,7 @@ class Initialize():
         self.sdtFactor           = 0        #Factor how strong the standard deviation should influence the score
         self.outerCycleCount     = 1000     #Count of permutations
         self.innerCycleCount     = 100      #Count of permutation to find the next best permutation
-        self.breakThreshold      = 100      #Count of how often the outer cycle should run without a change in score.
+        self.breakThreshold      = 1000      #Count of how often the outer cycle should run without a change in score.
         self.permutationStrength = .5       #Factor of the exponentialdistribution
         
         #path to the initial student table, has to be done via GUI
@@ -70,8 +58,9 @@ class Initialize():
             correctPath(pathToTable, que)
         else:
             pathToTable = r'MMLS Enrollment 2017_wish list for program check.csv'
-            pathToTable = r"ScoreTable_test.csv"
-            pathToTable = r"MMLSHandCheck.csv"
+            #pathToTable = r"ScoreTable_test.csv"
+            #pathToTable = r"MMLSHandCheck.csv"
+            #pathToTable = r"test.csv"
             correctPath(pathToTable, que)
             
         self.ospath = os.path.abspath(pathToTable)    
@@ -104,10 +93,9 @@ class Initialize():
             self.plot = Plot(gui)
         else:
             self.plot = Plot()
-        print "BLUB"
+            
         #creation of the initial (random) assignment------------------------------------
         self.assignmentMatrix = initialAssignmentMatrix(wishList, self.moduleSize, que)
-        print "BLUB"
         
     def __str__(self):
         out = "\n"

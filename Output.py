@@ -10,7 +10,7 @@ class Plot:
     
     def __init__(self, gui=None):
         self.fig = plt.figure(figsize=(6,5))
-        self.fig.set_facecolor("grey")
+        self.fig.set_facecolor("#ADADAD")
         self.axarr1 = self.fig.add_subplot(221)
         self.axarr2 = self.fig.add_subplot(223)
         self.axarr3 = self.fig.add_subplot(122)
@@ -25,7 +25,7 @@ class Plot:
         self.axarr3.set_xlabel("Student priorities")
         self.axarr3.set_ylabel("Students")
         
-        self.gui = gui
+        self.gui = gui#None#gui
         
         if self.gui:
             self.canvas = FigureCanvasTkAgg(self.fig, master=self.gui)
@@ -124,8 +124,9 @@ def SaveFinalTable(values, que=None):
 
     if not cmpFile:
         if que:
-            que.put("ERROR: Although the optimization finished, it seems that the data file was not read properly.")
-            que.put("ERROR: Please compare >>InitialData_MAMA.csv<< with >>InitialData_Original_csv.<<")
+            que.put("WARNING: Although the optimization finished, it seems that the data file was not read properly")
+            que.put("WARNING: or had to be changed due to conflicts in the WishList.")
+            que.put("WARNING: Please compare >>InitialData_MAMA.csv<< with >>InitialData_Original_csv.<<")
         else:
             print "Although the optimization finished, it seems that the data file was not read properly."
             print "Please compare >>InitialData_MAMA.csv<< with >>InitialData_Original_csv.<<"           

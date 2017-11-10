@@ -22,10 +22,12 @@ def innerPermutation(assignmentMatrix, moduleSize):#one random student swaps
     return [initialData, False]
 
 def outerPermutation(assignmentMatrix):#two random students swap their modules
+    initialData = np.copy(assignmentMatrix) 
     studA   = randrange(np.shape(assignmentMatrix)[0])
     moduleA = choice(np.where(assignmentMatrix[studA] == 1)[0])
-    
-    while True:
+    i = 0
+    while i < 100:
+        i += 1
         studB   = randrange(np.shape(assignmentMatrix)[0])
         moduleB = choice(np.where(assignmentMatrix[studB] == 1)[0])
         #Check whether one of the students is already in the module he will go in
@@ -35,6 +37,8 @@ def outerPermutation(assignmentMatrix):#two random students swap their modules
             assignmentMatrix[studA][moduleB] = 1
             assignmentMatrix[studB][moduleA] = 1
             return [assignmentMatrix, [[studA, moduleA], [studB, moduleB]]]
+    return [initialData, False]
+
 
 def randPermutation(assignmentMatrix, wishList, studentGrades, moduleSize):#chooses to permutate inner or intra student
     if randint(1, 2) == 1:
@@ -137,7 +141,7 @@ def RunOptimizer(values, que=None):#Main running routine
 
         bestScore = newScore#maybe deepcopy
         
-        if step % 50 == 0:
+        if step < 2 or step % 50 == 0:
             if que:
                 que.put(str(step * innerCycleCount).ljust(len(maxIterations)) + " Permutations of " + maxIterations + " done")
             else:
