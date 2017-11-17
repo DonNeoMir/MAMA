@@ -124,9 +124,8 @@ def SaveFinalTable(values, que=None):
 
     if not cmpFile:
         if que:
-            que.put("WARNING: Although the optimization finished, it seems that the data file was not read properly")
-            que.put("WARNING: or had to be changed due to conflicts in the WishList.")
+            que.put("WARNING: The initial table has been modified!.")
             que.put("WARNING: Please compare >>InitialData_MAMA.csv<< with >>InitialData_Original_csv.<<")
         else:
-            print "Although the optimization finished, it seems that the data file was not read properly."
+            print "The initial table has been modified!"
             print "Please compare >>InitialData_MAMA.csv<< with >>InitialData_Original_csv.<<"           

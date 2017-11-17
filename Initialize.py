@@ -48,7 +48,7 @@ class Initialize():
         self.sdtFactor           = 0        #Factor how strong the standard deviation should influence the score
         self.outerCycleCount     = 1000     #Count of permutations
         self.innerCycleCount     = 100      #Count of permutation to find the next best permutation
-        self.breakThreshold      = 1000      #Count of how often the outer cycle should run without a change in score.
+        self.breakThreshold      = 100      #Count of how often the outer cycle should run without a change in score.
         self.permutationStrength = .5       #Factor of the exponentialdistribution
         
         #path to the initial student table, has to be done via GUI

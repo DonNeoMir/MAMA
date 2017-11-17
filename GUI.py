@@ -46,7 +46,8 @@ def goButtonCallBack(path, root):
 	console.config(state=NORMAL)
 	console.delete(1.0,END)
 	console.config(state=DISABLED)
-	thread.start_new_thread(Main.main, (dataQueue, root, path))
+	#thread.start_new_thread(Main.main, (dataQueue, root, path))
+	Main.main(dataQueue, root, path)
 	#threading.Thread(target=Main.main, args=(dataQueue, root, path)).start()
 
 #Some preparation---------------------------------------------------------------
