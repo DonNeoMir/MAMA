@@ -11,10 +11,10 @@ The Wishlist includes identifications of the Students (Names, Matrikel-Nr. or so
 * The Table should only include *ASCII* characters. (e.g. no ä or ß, use ae or ss instead).
 
 ### Using the Program
-After creating and saving the *Students Wishlist* in *csv* format, you can start the program by double clicking *MAMA.exe* . Click *Browse* and select the created *csv*-File. The path of the file will appear in the upper text field. Click choose to finally select it (The path will appear in green letters in the lower text field.). Finally, click *Start Optimization* to create an assignment for the students. On the right side the graphs should refresh every couple of seconds.
+After creating and saving the *Students Wishlist* in *csv* format, you can start the program by double clicking *MAMA.exe* (This can be found under windows/dist/GUI/MAMA.exe (*MAMA.exe* must stay in this foulder, but a link/Verküpfung can be created which than can be moved)). Click *Browse* and select the created *csv*-File. The path of the file will appear in the upper text field. Click choose to finally select it (The path will appear in green letters in the lower text field.). Finally, click *Start Optimization* to create an assignment for the students. On the right side the graphs should refresh every couple of seconds.
 
 If the assignment is finished a feedback should appear in the lower left text box. If everything went well it should state which percentage the final score is, and that the program finished. If it did not finish without an error correct the students wishlist according to the instructions given in the text box and above. Restart the program and try again.
-Once the program has finished, it can be closed
+Once the program has finished, it can be closed. (Closing the program will lead to an error. This can be ignort.)
 
 ### Interpreting the Results
 After the Program successfully finished and has been closed, the assignment can be found in a newly created folder next to the *WISHLIST.csv* . It contains an image of the analysis plots, the original wishlist and the one as interpreted by the program (these should be identical) and the final assignment.
