@@ -3,6 +3,7 @@ test.py
 .metadata/*
 .pydevproject
 .project
+src/Results_*/*
 ModulAssignmenter.py
 FinalAssigment.csv
 Results_*
